@@ -1,0 +1,44 @@
+# System files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# Java / Maven / Gradle
+target/
+build/
+.gradle/
+
+# Environment and secrets
+.env
+.env.local
+*.pem
+*.key
+credentials.json
+secrets.yaml
+
+# Generated outputs
+*.log
+*.tmp
+*.bak
+
+# Large local artifacts
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+
