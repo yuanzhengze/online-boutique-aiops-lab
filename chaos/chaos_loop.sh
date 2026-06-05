@@ -7,7 +7,7 @@ YAML_DIR="/tmp/chaos-yamls"
 LOG_FILE="/tmp/chaos_loop.log"
 TIMELINE_FILE="/tmp/chaos_timeline.csv"
 PROM_DIR="/tmp/prom_snapshots"
-INTERVAL=900  # 15分钟 = 900秒
+INTERVAL=1800  # 30分钟 = 1800秒
 
 mkdir -p $PROM_DIR
 
