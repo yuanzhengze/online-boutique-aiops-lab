@@ -1,0 +1,21 @@
+# HTTPChaos: 对currencyservice注入HTTP 503错误
+# 模拟货币转换服务暂时不可用
+apiVersion: chaos-mesh.org/v1alpha1
+kind: HTTPChaos
+metadata:
+  name: http-error-currency
+  namespace: chaos-mesh
+spec:
+  mode: one
+  selector:
+    namespaces:
+      - default
+    labelSelectors:
+      app: currencyservice
+  target: Request
+  port: 7000
+  method:
+    - GET
+    - POST
+  statusCode: 503
+  duration: "120s"

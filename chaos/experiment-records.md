@@ -335,41 +335,159 @@
 
 ---
 
-## 自动化循环注入 v2
+## 实验15: HTTPChaos - 中断 frontend 请求
 
-为持续产生故障数据供监控和算法模块使用，部署了自动化循环注入脚本 v2。
+- **实验名称**: HTTP Abort - frontend
+- **实验类型**: HTTPChaos (Abort)
+- **负责人**: 谭张锐
+- **实验日期**: 2026-06-05
+- **配置路径**: chaos/experiments/http-abort-frontend.yaml
+
+### 实验目的
+
+在HTTP层直接中断前端服务的GET请求，比网络丢包更精确地模拟服务端错误。
+
+### 实验参数
+
+| 参数 | 取值 | 说明 |
+|------|------|------|
+| 故障类型 | HTTP Abort | 中断HTTP请求 |
+| 目标服务 | frontend | 前端服务 |
+| 目标端口 | 8080 | |
+| 匹配方法 | GET | |
+| 匹配路径 | /, /product/* | |
+| 持续时间 | 120s | |
+
+---
+
+## 实验16: HTTPChaos - 延迟 productcatalogservice
+
+- **实验名称**: HTTP Delay - productcatalogservice
+- **实验类型**: HTTPChaos (Delay)
+- **负责人**: 谭张锐
+- **实验日期**: 2026-06-05
+- **配置路径**: chaos/experiments/http-delay-productcatalog.yaml
+
+### 实验目的
+
+在HTTP层注入延迟，比网络延迟更精确——只影响特定API路径。
+
+### 实验参数
+
+| 参数 | 取值 | 说明 |
+|------|------|------|
+| 故障类型 | HTTP Delay 500ms | HTTP层延迟 |
+| 目标服务 | productcatalogservice | 商品目录服务 |
+| 目标端口 | 3550 | |
+| 匹配方法 | GET | |
+| 持续时间 | 120s | |
+
+---
+
+## 实验17: HTTPChaos - currencyservice 返回503
+
+- **实验名称**: HTTP Error 503 - currencyservice
+- **实验类型**: HTTPChaos (StatusCode)
+- **负责人**: 谭张锐
+- **实验日期**: 2026-06-05
+- **配置路径**: chaos/experiments/http-error-currency.yaml
+
+### 实验目的
+
+模拟货币转换服务返回503错误，观察上游服务的容错处理。
+
+### 实验参数
+
+| 参数 | 取值 | 说明 |
+|------|------|------|
+| 故障类型 | HTTP StatusCode 503 | 返回特定错误码 |
+| 目标服务 | currencyservice | 货币转换服务 |
+| 目标端口 | 7000 | |
+| 匹配方法 | GET, POST | |
+| 持续时间 | 120s | |
+
+---
+
+## 实验18: TimeChaos - recommendationservice 时钟偏移-10s
+
+- **实验名称**: Time Skew - recommendationservice
+- **实验类型**: TimeChaos
+- **负责人**: 谭张锐
+- **实验日期**: 2026-06-05
+- **配置路径**: chaos/experiments/time-skew-recommendation.yaml
+
+### 实验目的
+
+模拟分布式系统中时钟不同步，影响超时判断和日志时间戳对齐。
+
+### 实验参数
+
+| 参数 | 取值 | 说明 |
+|------|------|------|
+| 故障类型 | Time Skew | 时钟偏移 |
+| 目标服务 | recommendationservice | 推荐服务 |
+| 偏移量 | -10s | 时钟慢10秒 |
+| 时钟ID | CLOCK_REALTIME | |
+| 持续时间 | 120s | |
+
+---
+
+## 实验19: TimeChaos - checkoutservice 时钟偏移+5s
+
+- **实验名称**: Time Skew - checkoutservice
+- **实验类型**: TimeChaos
+- **负责人**: 谭张锐
+- **实验日期**: 2026-06-05
+- **配置路径**: chaos/experiments/time-skew-checkout.yaml
+
+### 实验目的
+
+模拟结算服务时钟快5秒，可能导致订单时间戳错误。
+
+### 实验参数
+
+| 参数 | 取值 | 说明 |
+|------|------|------|
+| 故障类型 | Time Skew | 时钟偏移 |
+| 目标服务 | checkoutservice | 结算服务 |
+| 偏移量 | +5s | 时钟快5秒 |
+| 时钟ID | CLOCK_REALTIME | |
+| 持续时间 | 120s | |
+
+---
+
+## 自动化循环注入 v3
+
+为持续产生故障数据供监控和算法模块使用，部署了自动化循环注入脚本 v3。
+
+**v3 策略**：重点突出核心故障，每种多次注入，确保算法组有足够数据复现模型。
 
 - **脚本路径**: chaos/chaos_loop.sh
-- **注入频率**: 每 10 分钟注入一种故障
-- **实验数量**: 26 种故障轮流执行（含复合故障和渐进式参数）
+- **注入频率**: 每 5 分钟注入一种故障
 - **运行模式**: 24 小时不间断循环
-- **完整一轮**: 约 4.3 小时
+- **时间线记录**: `/tmp/chaos_timeline.csv`（精确到秒的注入/结束时间戳）
+- **Prometheus快照**: `/tmp/prom_snapshots/`（每次注入期间自动采集监控指标）
 
-### 26 种实验列表
+### 实验调度策略
 
-| # | 类型 | 目标服务 | 持续时间 |
-|---|------|---------|---------|
-| 1 | Pod Kill | cartservice | 30s |
-| 2 | Pod Kill | frontend | 30s |
-| 3 | Pod Kill | checkoutservice | 30s |
-| 4 | Pod Kill | emailservice | 30s |
-| 5 | Pod Kill | redis-cart | 30s |
-| 6 | Network Delay 500ms | recommendationservice | 120s |
-| 7 | Network Delay 500ms | cartservice | 120s |
-| 8 | Network Delay 800ms | productcatalogservice | 120s |
-| 9 | Network Delay 600ms | shippingservice | 120s |
-| 10 | Network Loss 30% | frontend | 120s |
-| 11 | Network Loss 40% | recommendationservice | 120s |
-| 12 | Network Loss 25% | checkoutservice | 120s |
-| 13 | Network Loss 35% | paymentservice | 120s |
-| 14 | CPU Stress 80% | productcatalogservice | 120s |
-| 15 | CPU Stress 80% | adservice | 120s |
-| 16 | Memory Stress 256MB | currencyservice | 120s |
-| 17 | Memory Stress 256MB | checkoutservice | 120s |
-| 18 | **复合**: Delay 300ms + CPU 90% | productcatalogservice | 120s |
-| 19 | **复合**: Pod Kill + Delay 800ms | cartservice + checkoutservice | 60s+120s |
-| 20 | **复合**: Mem 512MB + Loss 20% | currencyservice | 120s |
-| 21 | **渐进**: Loss 10% | frontend | 120s |
-| 22 | **渐进**: Loss 50% | frontend | 120s |
-| 23 | **渐进**: Delay 200ms | recommendationservice | 120s |
-| 24 | **渐进**: Delay 1000ms | recommendationservice | 120s |
+| 类别 | 故障类型 | 每轮次数 | 说明 |
+|------|---------|---------|------|
+| **核心故障** | Pod Kill cartservice | 3 | 最经典K8s故障，重点采集 |
+| **核心故障** | Network Delay 500ms recommendation | 3 | 最常见生产故障，重点采集 |
+| **核心故障** | Network Loss 30% frontend | 3 | 明确影响可用性，重点采集 |
+| **核心故障** | CPU Stress productcatalog | 3 | 资源耗尽类，重点采集 |
+| **核心故障** | Memory Stress currency | 3 | 资源耗尽类，重点采集 |
+| 渐进式 | Loss 10%/50% frontend | 各1 | 找临界点 |
+| 渐进式 | Delay 200ms/1000ms recommendation | 各1 | 找临界点 |
+| 复合故障 | Delay+CPU / PodKill+Delay / Mem+Loss | 各1 | 级联故障 |
+| HTTPChaos | Abort / Delay / Error503 | 各1 | HTTP层故障 |
+| TimeChaos | 时钟偏移 ±5s/10s | 各1 | 时钟不同步 |
+
+### 时间线CSV格式
+
+```csv
+experiment,start_time,end_time,start_epoch,end_epoch,status
+pod-kill-cartservice,2026-06-05T20:59:57+08:00,2026-06-05T21:01:32+08:00,1749128397,1749128492,success
+```
+
+算法组可通过 `start_epoch` 和 `end_epoch` 精确对齐 Prometheus 数据。

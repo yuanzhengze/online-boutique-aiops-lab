@@ -1,0 +1,20 @@
+# HTTPChaos: 对productcatalogservice注入HTTP延迟
+# 在HTTP层注入延迟，比网络延迟更精确（只影响特定API路径）
+apiVersion: chaos-mesh.org/v1alpha1
+kind: HTTPChaos
+metadata:
+  name: http-delay-productcatalog
+  namespace: chaos-mesh
+spec:
+  mode: one
+  selector:
+    namespaces:
+      - default
+    labelSelectors:
+      app: productcatalogservice
+  target: Request
+  port: 3550
+  method:
+    - GET
+  delay: "500ms"
+  duration: "120s"
