@@ -1,0 +1,18 @@
+# 渐进式丢包 - frontend 50%
+apiVersion: chaos-mesh.org/v1alpha1
+kind: NetworkChaos
+metadata:
+  name: progressive-loss-frontend-50
+  namespace: chaos-mesh
+spec:
+  action: loss
+  mode: one
+  selector:
+    namespaces:
+      - default
+    labelSelectors:
+      app: frontend
+  loss:
+    loss: "50"
+    correlation: "50"
+  duration: "120s"

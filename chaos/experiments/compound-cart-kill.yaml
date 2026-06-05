@@ -1,0 +1,16 @@
+# 复合故障2: Pod Kill cartservice + Network Delay checkoutservice
+# 模拟购物车崩溃同时结算服务变慢的级联故障
+apiVersion: chaos-mesh.org/v1alpha1
+kind: PodChaos
+metadata:
+  name: compound-cart-kill
+  namespace: chaos-mesh
+spec:
+  action: pod-kill
+  mode: one
+  selector:
+    namespaces:
+      - default
+    labelSelectors:
+      app: cartservice
+  duration: "60s"
