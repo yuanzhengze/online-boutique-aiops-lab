@@ -1,0 +1,20 @@
+apiVersion: chaos-mesh.org/v1alpha1
+kind: NetworkChaos
+metadata:
+  name: network-delay-review-service
+  namespace: chaos-mesh
+spec:
+  action: delay
+  mode: all
+  selector:
+    namespaces:
+      - default
+    labelSelectors:
+      app: review-service
+  delay:
+    latency: "500ms"
+    correlation: "50"
+    jitter: "100ms"
+  duration: "120s"
+  scheduler:
+    cron: "@every 600s"
