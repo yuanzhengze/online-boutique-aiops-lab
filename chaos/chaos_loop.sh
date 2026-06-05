@@ -45,6 +45,11 @@ EXPERIMENTS=(
   "memory-stress-currency.yaml|mem-stress-currency"
   "memory-stress-currency.yaml|mem-stress-currency"
 
+  # === 新增服务故障注入（Review Service） ===
+  "pod-kill-reviewservice.yaml|pod-kill-reviewservice"
+  "network-delay-reviewservice.yaml|net-delay-reviewservice-500ms"
+  "cpu-stress-reviewservice.yaml|cpu-stress-reviewservice"
+
   # === 渐进式参数（各1次，找临界点） ===
   "progressive-loss-frontend-10.yaml|net-loss-frontend-10pct"
   "progressive-loss-frontend-50.yaml|net-loss-frontend-50pct"

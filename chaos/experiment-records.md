@@ -491,3 +491,94 @@ pod-kill-cartservice,2026-06-05T20:59:57+08:00,2026-06-05T21:01:32+08:00,1749128
 ```
 
 算法组可通过 `start_epoch` 和 `end_epoch` 精确对齐 Prometheus 数据。
+
+---
+
+## 实验20: Pod Kill - review-service
+
+- **实验名称**: Pod Kill - review-service
+- **实验类型**: PodChaos (Pod Kill)
+- **负责人**: 谭张锐
+- **实验日期**: 2026-06-06
+- **关联模块**: ChaosMesh 故障注入 + Review Service
+- **配置路径**: chaos/experiments/pod-kill-reviewservice.yaml
+
+### 实验目的
+
+验证新增 Review Service 在 Pod 被杀掉后的自动恢复能力，以及评价功能不可用时对商品详情页的影响。
+
+### 实验参数
+
+| 参数 | 取值 | 说明 |
+|------|------|------|
+| 故障类型 | Pod Kill | 杀掉 Pod |
+| 目标服务 | review-service | 商品评价服务 |
+| 持续时间 | 30s | 故障持续时间 |
+| 模式 | one | 影响1个Pod |
+
+### 分析预期
+
+- Pod Kill 后 K8s 能自动恢复，但恢复期间评价功能不可用
+- 商品详情页评价区域显示"Unable to load reviews"降级提示
+- 商品页面其他功能（加购、结算）不受影响
+
+---
+
+## 实验21: Network Delay 500ms - review-service
+
+- **实验名称**: Network Delay - review-service
+- **实验类型**: NetworkChaos (Delay)
+- **负责人**: 谭张锐
+- **实验日期**: 2026-06-06
+- **关联模块**: ChaosMesh 故障注入 + Review Service
+- **配置路径**: chaos/experiments/network-delay-reviewservice.yaml
+
+### 实验目的
+
+模拟 Review Service 网络延迟，观察对商品详情页评价加载速度的影响。
+
+### 实验参数
+
+| 参数 | 取值 | 说明 |
+|------|------|------|
+| 故障类型 | Network Delay | 网络延迟 |
+| 目标服务 | review-service | 商品评价服务 |
+| 延迟 | 500ms | 额外延迟 |
+| 抖动 | 100ms | 延迟抖动 |
+| 相关性 | 50% | 延迟相关性 |
+| 持续时间 | 120s | 故障持续时间 |
+
+### 分析预期
+
+- 评价区域加载变慢，但商品页面其他功能正常
+- 服务仍可用，但用户体验下降
+
+---
+
+## 实验22: CPU Stress - review-service
+
+- **实验名称**: CPU Stress - review-service
+- **实验类型**: StressChaos (CPU)
+- **负责人**: 谭张锐
+- **实验日期**: 2026-06-06
+- **关联模块**: ChaosMesh 故障注入 + Review Service
+- **配置路径**: chaos/experiments/cpu-stress-reviewservice.yaml
+
+### 实验目的
+
+模拟 Review Service CPU 压力，观察资源耗尽对评价服务响应时间的影响。
+
+### 实验参数
+
+| 参数 | 取值 | 说明 |
+|------|------|------|
+| 故障类型 | CPU Stress | CPU压力 |
+| 目标服务 | review-service | 商品评价服务 |
+| CPU负载 | 80% | CPU使用率 |
+| Workers | 2 | 压力线程数 |
+| 持续时间 | 120s | 故障持续时间 |
+
+### 分析预期
+
+- CPU 压力下评价接口响应时间可能增加
+- 由于 Review Service 资源限制为 200m CPU，压力效果可能较明显

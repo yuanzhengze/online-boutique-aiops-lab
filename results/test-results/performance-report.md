@@ -24,6 +24,9 @@
 | 11 | CPU Stress (80%, 2 workers) | adservice | 120s | 自动循环 |
 | 12 | Memory Stress (256MB, 2 workers) | currencyservice | 120s | curl |
 | 13 | Memory Stress (256MB, 2 workers) | checkoutservice | 120s | 自动循环 |
+| 14 | Pod Kill | review-service | 30s | 自动循环 |
+| 15 | Network Delay 500ms | review-service | 120s | 自动循环 |
+| 16 | CPU Stress (80%, 2 workers) | review-service | 120s | 自动循环 |
 
 ## 基线性能数据（无故障）
 
@@ -137,10 +140,10 @@ ChaosMesh 杀掉 cartservice 的 Pod，K8s 自动重新拉起新 Pod。
 
 为持续产生故障数据供监控和算法模块使用，部署了自动化循环注入脚本 `chaos/chaos_loop.sh`。
 
-- **注入频率**: 每 10 分钟注入一种故障
-- **实验数量**: 13 种故障轮流执行
+- **注入频率**: 每 30 分钟注入一种故障
+- **实验数量**: 30 种故障轮流执行（含 Review Service 3 种）
 - **运行模式**: 24 小时不间断循环
-- **完整一轮**: 约 2.2 小时
+- **完整一轮**: 约 15 小时
 - **日志位置**: 服务器 `/tmp/chaos_loop.log`
 - **查看状态**: 运行 `check_chaos_loop2.py` 可查看当前实验状态
 
@@ -160,6 +163,9 @@ ChaosMesh 杀掉 cartservice 的 Pod，K8s 自动重新拉起新 Pod。
 - chaos/experiments/cpu-stress-adservice.yaml
 - chaos/experiments/memory-stress-currency.yaml
 - chaos/experiments/memory-stress-checkoutservice.yaml
+- chaos/experiments/pod-kill-reviewservice.yaml
+- chaos/experiments/network-delay-reviewservice.yaml
+- chaos/experiments/cpu-stress-reviewservice.yaml
 
 ### 自动化循环脚本
 - chaos/chaos_loop.sh

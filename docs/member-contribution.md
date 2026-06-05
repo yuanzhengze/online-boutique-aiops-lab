@@ -8,7 +8,7 @@
 | 黄开轩 | 微服务开发 | Review Service 设计、实现、部署和系统集成 | 服务源码、API 文档、K8s 配置、运行截图 |  |
 | 陈宇轩 | 论文复现 | 算法框架、论文复现、数据预处理和多算法对比 | 算法代码、实验图表、对比分析 |  |
 | 陈文涛 | 监控与 Agent | Prometheus、Grafana、数据采集、邮件通知 Agent | 监控配置、数据集、Agent 脚本、邮件截图 |  |
-| 谭张锐 | 故障注入与性能测试 | ChaosMesh 实验、JMeter 性能测试、故障场景设计 | 故障配置、测试计划、性能结果 |  |
+| 谭张锐 | 故障注入与性能测试 + Review Service | ChaosMesh 实验、JMeter 性能测试、故障场景设计；Review Service 前端集成与故障注入扩展 | 故障配置、测试计划、性能结果、Review Service前端集成 | `chaos/experiments/`、`chaos/chaos_loop.sh`、`tests/jmeter/`、`services/review-service/` |
 | 傅昱翔 | 功能测试 | Selenium 测试、新增服务验证、轻量论文复现辅助 | 测试脚本、测试截图、测试记录 |  |
 
 ## 贡献说明写法

@@ -6,6 +6,24 @@
 
 - `experiments/`：Pod Kill、Network Delay、Network Loss、CPU Stress、Memory Stress 等实验配置。
 
+## 实验覆盖
+
+共 5 大类 16 种故障注入实验，覆盖 Online Boutique 原始 11 个微服务及新增 Review Service：
+
+| 类别 | 实验数 | 目标服务 |
+|------|--------|---------|
+| Pod Kill | 6 | cartservice, frontend, checkoutservice, emailservice, redis-cart, **review-service** |
+| Network Delay | 4 | recommendationservice, cartservice, productcatalogservice, **review-service** |
+| Network Loss | 3 | frontend, recommendationservice, checkoutservice |
+| CPU Stress | 3 | productcatalogservice, adservice, **review-service** |
+| Memory Stress | 2 | currencyservice, checkoutservice |
+
+此外还有渐进式、复合、HTTP 层、时钟故障等扩展实验。
+
+## 自动化脚本
+
+- `chaos_loop.sh`：24 小时自动化循环注入，核心故障各 3 次/轮，配合 Prometheus 快照采集
+
 ## 记录要求
 
 每次实验需要记录：
