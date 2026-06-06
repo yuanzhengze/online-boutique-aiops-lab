@@ -14,7 +14,7 @@
 | 组件 | 命名空间 | 内部端口 | NodePort | 状态 |
 |------|----------|----------|----------|------|
 | Prometheus | monitoring | 9090 | 32090 | Running |
-| Grafana | monitoring | 3000 | 32000 | Running |
+| Grafana | monitoring | 3000 | 30960 | Running |
 | node-exporter | monitoring | 9100 | - | Running |
 | kube-state-metrics | monitoring | 8080 | - | Running |
 | ChaosMesh | chaos-mesh | - | - | Running |
@@ -35,12 +35,12 @@ ssh -p 1919 collaborator@svr-1.mc.nankai.club
 
 **方式一：SSH 隧道（推荐，本机即可访问）**
 ```powershell
-ssh -p 1919 -L 3000:172.17.0.7:32000 collaborator@svr-1.mc.nankai.club
+ssh -p 1919 -L 3000:172.17.0.7:30960 collaborator@svr-1.mc.nankai.club
 ```
 然后浏览器打开 `http://localhost:3000`
 
 **方式二：直接访问服务器**
-浏览器打开 `http://svr-1.mc.nankai.club:32000`（如果防火墙允许）
+浏览器打开 `http://svr-1.mc.nankai.club:30960`（如果防火墙允许）
 
 > 用户名：`admin`，密码在服务器上获取
 
@@ -84,7 +84,7 @@ kubectl exec -n monitoring prometheus-564f4bb9bb-4xfdk -- wget -qO- 'http://loca
 
 Agent 模块在服务器上本地运行时：
 ```
-GRAFANA_URL=http://172.17.0.7:32000
+GRAFANA_URL=http://172.17.0.7:30960
 ```
 
 Agent 模块在本机运行时（需先建立 SSH 隧道）：

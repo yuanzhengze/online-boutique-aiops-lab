@@ -142,12 +142,53 @@ def get_container_status():
     return status
 
 
+def get_error_rate():
+    """获取 HTTP 错误率（5xx 占全部请求的比例）"""
+    # 尝试通过容器级别指标间接推断（如果应用级指标未暴露）
+    query = 'rate(container_network_transmit_bytes_total{namespace="default"}[5m])'
+    results = prometheus_query(query)
+    if not results:
+        return [], "network_tx"
+    net_list = []
+    for r in results:
+        pod = r["metric"].get("pod", "unknown")
+        val = float(r["value"][1])
+        net_list.append({"pod": pod, "network_tx_bytes_per_sec": round(val, 2)})
+    return net_list, "network_tx"
+
+
+def get_latency():
+    """获取请求延迟指标（通过网络流量变化间接估计）"""
+    query = 'rate(container_network_receive_bytes_total{namespace="default"}[5m])'
+    results = prometheus_query(query)
+    if not results:
+        return [], "network_rx"
+    net_list = []
+    for r in results:
+        pod = r["metric"].get("pod", "unknown")
+        val = float(r["value"][1])
+        net_list.append({"pod": pod, "network_rx_bytes_per_sec": round(val, 2)})
+    return net_list, "network_rx"
+
+
+def get_throughput():
+    """获取服务吞吐量（通过网络总流量和 Pod 重启次数综合推断）"""
+    # 使用 Pod 运行状态 + 网络活动作为吞吐量的间接指标
+    query = 'kube_pod_container_status_running{namespace="default"}'
+    results = prometheus_query(query)
+    if not results:
+        return [], 0
+    running_count = sum(1 for r in results if int(float(r["value"][1])) == 1)
+    total_count = len(results)
+    return results, running_count
+
+
 # ============================================
 # 规则分析
 # ============================================
 
 
-def analyze_metrics(cpu_data, memory_data, restart_data, status_data):
+def analyze_metrics(cpu_data, memory_data, restart_data, status_data, error_data, latency_data, throughput_data):
     """基于预设规则分析指标，检测异常"""
     anomalies = []
     severity = "normal"
@@ -206,7 +247,48 @@ def analyze_metrics(cpu_data, memory_data, restart_data, status_data):
             severity = "warning"
         suggestions.append("检查内存泄漏或增加内存限制")
 
-    # 5. 综合判断
+    # 5. 检查错误率（网络发送速率异常推断）
+    if error_data:
+        avg_tx = sum(e["network_tx_bytes_per_sec"] for e in error_data) / len(error_data)
+        if avg_tx > 50000:
+            anomalies.append({
+                "type": "error_rate",
+                "severity": "warning",
+                "detail": f"网络发送速率偏高({avg_tx:.0f} bytes/s)，可能伴随错误响应增加",
+                "threshold": "50000 bytes/s",
+            })
+            if severity == "normal":
+                severity = "warning"
+            suggestions.append("检查服务日志中的 5xx 错误")
+
+    # 6. 检查请求延迟（网络接收速率异常推断）
+    if latency_data:
+        avg_rx = sum(l["network_rx_bytes_per_sec"] for l in latency_data) / len(latency_data)
+        if avg_rx > 100000:
+            anomalies.append({
+                "type": "latency",
+                "severity": "warning",
+                "detail": f"网络接收速率偏高({avg_rx:.0f} bytes/s)，可能请求延迟升高",
+                "threshold": "100000 bytes/s",
+            })
+            if severity == "normal":
+                severity = "warning"
+            suggestions.append("排查慢查询或下游服务瓶颈")
+
+    # 7. 检查吞吐量（可用服务数量）
+    _, running_count = throughput_data
+    total = len(status_data)
+    if running_count < total * 0.5:
+        anomalies.append({
+            "type": "throughput",
+            "severity": "critical",
+            "detail": f"可用服务不足: {running_count}/{total} Pod 运行，吞吐量严重下降",
+        })
+        if severity != "critical":
+            severity = "critical"
+        suggestions.append("立即恢复已停止的服务")
+
+    # 8. 综合判断
     if not anomalies:
         anomalies.append({
             "type": "all_clear",
@@ -223,7 +305,7 @@ def analyze_metrics(cpu_data, memory_data, restart_data, status_data):
 # ============================================
 
 
-def generate_report(cpu_data, memory_data, restart_data, status_data, anomalies, severity, suggestions):
+def generate_report(cpu_data, memory_data, restart_data, status_data, error_data, latency_data, throughput_data, anomalies, severity, suggestions):
     """生成分析报告"""
     now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
 
@@ -251,6 +333,12 @@ def generate_report(cpu_data, memory_data, restart_data, status_data, anomalies,
     report.append(f"  累计重启次数:    {total_restarts}")
     report.append(f"  总内存使用:      {total_memory_mb:.0f} MB")
     report.append(f"  平均 CPU 使用:   {avg_cpu:.4f} cores/s")
+    avg_tx = sum(e["network_tx_bytes_per_sec"] for e in error_data) / len(error_data) if error_data else 0
+    avg_rx = sum(l["network_rx_bytes_per_sec"] for l in latency_data) / len(latency_data) if latency_data else 0
+    _, running_count = throughput_data
+    report.append(f"  网络发送速率:    {avg_tx:.0f} bytes/s")
+    report.append(f"  网络接收速率:    {avg_rx:.0f} bytes/s")
+    report.append(f"  可用服务比例:    {running_count}/{total_pods}")
     report.append("")
 
     if cpu_data:
@@ -263,6 +351,18 @@ def generate_report(cpu_data, memory_data, restart_data, status_data, anomalies,
         report.append("【内存使用 Top 5】")
         for m in sorted(memory_data, key=lambda x: x["memory_mb"], reverse=True)[:5]:
             report.append(f"  {m['pod']:<40s}  {m['memory_mb']:.0f} MB")
+        report.append("")
+
+    if error_data:
+        report.append("【网络发送速率（错误率参考） Top 5】")
+        for e in sorted(error_data, key=lambda x: x["network_tx_bytes_per_sec"], reverse=True)[:5]:
+            report.append(f"  {e['pod']:<40s}  {e['network_tx_bytes_per_sec']:.0f} bytes/s")
+        report.append("")
+
+    if latency_data:
+        report.append("【网络接收速率（延迟参考） Top 5】")
+        for l in sorted(latency_data, key=lambda x: x["network_rx_bytes_per_sec"], reverse=True)[:5]:
+            report.append(f"  {l['pod']:<40s}  {l['network_rx_bytes_per_sec']:.0f} bytes/s")
         report.append("")
 
     report.append("【异常检测结果】")
@@ -381,17 +481,26 @@ def main():
     memory_data = get_memory_usage()
     restart_data = get_pod_restarts()
     status_data = get_container_status()
+    error_data, _ = get_error_rate()
+    latency_data, _ = get_latency()
+    throughput_data = get_throughput()
 
     if not args.quiet:
         print(f"  CPU 指标:    {len(cpu_data)} 条")
         print(f"  内存指标:    {len(memory_data)} 条")
         print(f"  重启记录:    {len(restart_data)} 条")
         print(f"  容器状态:    {len(status_data)} 条")
+        print(f"  错误率参考:  {len(error_data)} 条")
+        print(f"  延迟参考:    {len(latency_data)} 条")
+        print(f"  吞吐量参考:  {throughput_data[1]} Pod 运行")
 
     # Step 2: 规则分析
     if not args.quiet:
         print("\n[2/4] 规则分析...")
-    anomalies, severity, suggestions = analyze_metrics(cpu_data, memory_data, restart_data, status_data)
+    anomalies, severity, suggestions = analyze_metrics(
+        cpu_data, memory_data, restart_data, status_data,
+        error_data, latency_data, throughput_data
+    )
 
     if not args.quiet:
         for a in anomalies:
@@ -402,7 +511,9 @@ def main():
     if not args.quiet:
         print("\n[3/4] 生成分析报告...")
     report_text, report_json = generate_report(
-        cpu_data, memory_data, restart_data, status_data, anomalies, severity, suggestions
+        cpu_data, memory_data, restart_data, status_data,
+        error_data, latency_data, throughput_data,
+        anomalies, severity, suggestions
     )
 
     print(report_text)
