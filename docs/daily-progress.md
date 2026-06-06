@@ -41,3 +41,9 @@
 
 后续日期按同样格式追加。每天结束前，袁正泽检查是否存在阻塞项，并在群里同步第二天重点。
 
+## Day 7（6.6）
+
+| 成员 | 今日完成 | 明日计划 | 遇到问题 | 需要协助 | 已提交材料 |
+| --- | --- | --- | --- | --- | --- |
+| 谭张锐 | 1. 评论区前端视觉美化（评分统计卡片、筛选按钮、情感标签、提交表单）2. 修复 Grafana 32000 端口冲突 3. 修复 Chaos Dashboard 30960 selector 不匹配 4. 修复 Prometheus cadvisor 采集中断 5. 部署 chaos_loop v4 最终版（5种核心故障，随机3-5次，20分钟间隔）6. 更新 chaos/README.md、docs/deployment.md 等文档 | 继续监控故障注入运行状态，配合算法组数据需求 | Prometheus 历史数据因 emptyDir 重启丢失 | 算法组同学需要故障时间线数据可查看 `/tmp/chaos_timeline_v4.csv` | `chaos/README.md`、`docs/deployment.md` |
+
