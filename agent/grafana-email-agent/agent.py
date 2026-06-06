@@ -466,73 +466,93 @@ def main():
     parser.add_argument("--send-email", action="store_true", help="发送邮件报告")
     parser.add_argument("--output", type=str, default=None, help="输出 JSON 报告文件路径")
     parser.add_argument("--quiet", action="store_true", help="安静模式，不打印控制台输出")
+    parser.add_argument("--interval", type=int, default=0, help="定时运行间隔（分钟），0 表示只运行一次，如 --interval 30 表示每 30 分钟巡检一次")
     args = parser.parse_args()
 
     if not args.quiet:
         print("=" * 60)
         print("  Grafana 智能分析与邮件通知 Agent")
         print(f"  Prometheus: {CONFIG['PROMETHEUS_URL']}")
+        if args.interval > 0:
+            print(f"  定时模式:   每 {args.interval} 分钟巡检一次")
         print("=" * 60)
 
-    # Step 1: 获取监控数据
-    if not args.quiet:
-        print("\n[1/4] 获取监控指标...")
-    cpu_data = get_cpu_usage()
-    memory_data = get_memory_usage()
-    restart_data = get_pod_restarts()
-    status_data = get_container_status()
-    error_data, _ = get_error_rate()
-    latency_data, _ = get_latency()
-    throughput_data = get_throughput()
+    import time
 
-    if not args.quiet:
-        print(f"  CPU 指标:    {len(cpu_data)} 条")
-        print(f"  内存指标:    {len(memory_data)} 条")
-        print(f"  重启记录:    {len(restart_data)} 条")
-        print(f"  容器状态:    {len(status_data)} 条")
-        print(f"  错误率参考:  {len(error_data)} 条")
-        print(f"  延迟参考:    {len(latency_data)} 条")
-        print(f"  吞吐量参考:  {throughput_data[1]} Pod 运行")
+    run_count = 0
+    while True:
+        run_count += 1
+        if args.interval > 0 and not args.quiet:
+            print(f"\n{'='*60}")
+            print(f"  第 {run_count} 次巡检  {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+            print(f"{'='*60}")
 
-    # Step 2: 规则分析
-    if not args.quiet:
-        print("\n[2/4] 规则分析...")
-    anomalies, severity, suggestions = analyze_metrics(
-        cpu_data, memory_data, restart_data, status_data,
-        error_data, latency_data, throughput_data
-    )
-
-    if not args.quiet:
-        for a in anomalies:
-            flag = {"critical": "[严重]", "warning": "[警告]", "info": "[信息]"}.get(a["severity"], "")
-            print(f"  {flag} {a['detail']}")
-
-    # Step 3: 生成分析报告
-    if not args.quiet:
-        print("\n[3/4] 生成分析报告...")
-    report_text, report_json = generate_report(
-        cpu_data, memory_data, restart_data, status_data,
-        error_data, latency_data, throughput_data,
-        anomalies, severity, suggestions
-    )
-
-    print(report_text)
-
-    # 保存 JSON 报告
-    if args.output:
-        os.makedirs(os.path.dirname(args.output) or ".", exist_ok=True)
-        with open(args.output, "w", encoding="utf-8") as f:
-            json.dump(report_json, f, ensure_ascii=False, indent=2)
-        print(f"\n[JSON 报告] 已保存至: {args.output}")
-
-    # Step 4: 发送邮件
-    if args.send_email:
+        # Step 1: 获取监控数据
         if not args.quiet:
-            print("\n[4/4] 发送邮件...")
-        send_email(report_text, report_json)
-    else:
+            print("\n[1/4] 获取监控指标...")
+        cpu_data = get_cpu_usage()
+        memory_data = get_memory_usage()
+        restart_data = get_pod_restarts()
+        status_data = get_container_status()
+        error_data, _ = get_error_rate()
+        latency_data, _ = get_latency()
+        throughput_data = get_throughput()
+
         if not args.quiet:
-            print("\n[4/4] 跳过邮件发送（使用 --send-email 启用）")
+            print(f"  CPU 指标:    {len(cpu_data)} 条")
+            print(f"  内存指标:    {len(memory_data)} 条")
+            print(f"  重启记录:    {len(restart_data)} 条")
+            print(f"  容器状态:    {len(status_data)} 条")
+            print(f"  错误率参考:  {len(error_data)} 条")
+            print(f"  延迟参考:    {len(latency_data)} 条")
+            print(f"  吞吐量参考:  {throughput_data[1]} Pod 运行")
+
+        # Step 2: 规则分析
+        if not args.quiet:
+            print("\n[2/4] 规则分析...")
+        anomalies, severity, suggestions = analyze_metrics(
+            cpu_data, memory_data, restart_data, status_data,
+            error_data, latency_data, throughput_data
+        )
+
+        if not args.quiet:
+            for a in anomalies:
+                flag = {"critical": "[严重]", "warning": "[警告]", "info": "[信息]"}.get(a["severity"], "")
+                print(f"  {flag} {a['detail']}")
+
+        # Step 3: 生成分析报告
+        if not args.quiet:
+            print("\n[3/4] 生成分析报告...")
+        report_text, report_json = generate_report(
+            cpu_data, memory_data, restart_data, status_data,
+            error_data, latency_data, throughput_data,
+            anomalies, severity, suggestions
+        )
+
+        print(report_text)
+
+        # 保存 JSON 报告
+        if args.output:
+            os.makedirs(os.path.dirname(args.output) or ".", exist_ok=True)
+            with open(args.output, "w", encoding="utf-8") as f:
+                json.dump(report_json, f, ensure_ascii=False, indent=2)
+            print(f"\n[JSON 报告] 已保存至: {args.output}")
+
+        # Step 4: 发送邮件
+        if args.send_email:
+            if not args.quiet:
+                print("\n[4/4] 发送邮件...")
+            send_email(report_text, report_json)
+        else:
+            if not args.quiet:
+                print("\n[4/4] 跳过邮件发送（使用 --send-email 启用）")
+
+        # 定时模式：等待后继续下次巡检
+        if args.interval > 0:
+            print(f"\n[定时] 等待 {args.interval} 分钟后进行下次巡检...")
+            time.sleep(args.interval * 60)
+        else:
+            break  # 单次模式，退出
 
 
 if __name__ == "__main__":
