@@ -1,0 +1,70 @@
+{
+  "timestamp": "2026-06-06 02:25:58 UTC",
+  "severity": "warning",
+  "overview": {
+    "total_pods": 13,
+    "running_pods": 13,
+    "total_restarts": 655,
+    "total_memory_mb": 608.14,
+    "avg_cpu_cores_per_sec": 0.0053
+  },
+  "anomalies": [
+    {
+      "type": "pod_restart",
+      "severity": "warning",
+      "detail": "Pod 发生重启: productcatalogservice-64cd8c46d9-wt6rt(61次), adservice-8d9d67f7-n6z9t(193次), checkoutservice-5987dfd54c-vq6m5(110次), emailservice-56bc5695dc-k7ngk(1次), paymentservice-5d879448df-7qrln(255次), redis-cart-7ff8f4d6ff-64q8m(3次), shippingservice-69cbf7c6c7-5sn8c(29次), review-service-6666fdc7db-mf5l4(2次), cartservice-7b6889d85b-t4d7z(1次)"
+    }
+  ],
+  "suggestions": [
+    "检查 Pod 日志: kubectl logs <pod_name> -n default"
+  ],
+  "cpu_top5": [
+    {
+      "pod": "frontend-775668cf57-69mdf",
+      "cpu_cores_per_sec": 0.0132
+    },
+    {
+      "pod": "cartservice-7b6889d85b-t4d7z",
+      "cpu_cores_per_sec": 0.01
+    },
+    {
+      "pod": "paymentservice-5d879448df-7qrln",
+      "cpu_cores_per_sec": 0.0089
+    },
+    {
+      "pod": "currencyservice-8c464cb79-29d2t",
+      "cpu_cores_per_sec": 0.0065
+    },
+    {
+      "pod": "recommendationservice-6486d59c4c-dvxb9",
+      "cpu_cores_per_sec": 0.0063
+    }
+  ],
+  "memory_top5": [
+    {
+      "pod": "loadgenerator-746ffcd44c-tntzd",
+      "memory_bytes": 263376896,
+      "memory_mb": 251.18
+    },
+    {
+      "pod": "adservice-8d9d67f7-n6z9t",
+      "memory_bytes": 97603584,
+      "memory_mb": 93.08
+    },
+    {
+      "pod": "cartservice-7b6889d85b-t4d7z",
+      "memory_bytes": 62234624,
+      "memory_mb": 59.35
+    },
+    {
+      "pod": "currencyservice-8c464cb79-29d2t",
+      "memory_bytes": 43884544,
+      "memory_mb": 41.85
+    },
+    {
+      "pod": "emailservice-56bc5695dc-k7ngk",
+      "memory_bytes": 41844736,
+      "memory_mb": 39.91
+    }
+  ]
+}

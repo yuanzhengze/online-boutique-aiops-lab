@@ -1,0 +1,14 @@
+timestamp,pod,namespace,container,value
+test_0604,checkoutservice-5987dfd54c-vq6m5,default,unknown,0.0009693094284028364
+test_0604,recommendationservice-6486d59c4c-dvxb9,default,unknown,0.007055126608257705
+test_0604,cartservice-7b6889d85b-zq72k,default,unknown,0.004526174641202321
+test_0604,currencyservice-8c464cb79-jn8cj,default,unknown,0.005614453765657015
+test_0604,paymentservice-5d879448df-7qrln,default,unknown,0.0009817096227046677
+test_0604,adservice-8d9d67f7-n6z9t,default,unknown,0.0012222809876916135
+test_0604,redis-cart-7ff8f4d6ff-64q8m,default,unknown,0.002397775879836718
+test_0604,emailservice-56bc5695dc-k7ngk,default,unknown,0.001821302725773841
+test_0604,loadgenerator-746ffcd44c-tntzd,default,unknown,0.004822158543565861
+test_0604,shippingservice-69cbf7c6c7-5sn8c,default,unknown,0.0007038955373074888
+test_0604,frontend-849f6b48f8-zczzz,default,unknown,0.010613895557051573
+test_0604,productcatalogservice-64cd8c46d9-wt6rt,default,unknown,0.005178761972996893
+test_0604,review-service-6666fdc7db-mf5l4,default,unknown,0.0002626955077294448
