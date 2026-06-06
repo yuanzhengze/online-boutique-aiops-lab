@@ -2,13 +2,13 @@
 """
 Grafana 智能分析与邮件通知 Agent 模块
 ========================================
-功能闭环：获取监控数据 -> 规则分析 -> 生成摘要 -> 邮件通知
+功能闭环：获取监控数据 -> DeepSeek AI 智能分析 -> 生成摘要 -> 邮件通知
 依赖：仅使用 Python 3 标准库，无需额外安装
 
 使用方式：
   python3 agent.py                          # 即时分析 + 控制台输出
   python3 agent.py --send-email             # 即时分析 + 发送邮件
-  python3 agent.py --range 60               # 分析最近 60 分钟数据
+  python3 agent.py --interval 480           # 每 480 分钟自动巡检
   python3 agent.py --output report.json     # 输出 JSON 报告
 """
 
@@ -36,11 +36,8 @@ CONFIG = {
     "SMTP_PASSWORD": "",
     "MAIL_FROM": "",
     "MAIL_TO": "",
-    "QUERY_RANGE_MINUTES": 30,
-    "ERROR_RATE_THRESHOLD": 0.05,
-    "LATENCY_THRESHOLD_MS": 1000,
-    "CPU_THRESHOLD_PERCENT": 80,
-    "MEMORY_THRESHOLD_PERCENT": 80,
+    "DEEPSEEK_API_KEY": "",
+    "DEEPSEEK_MODEL": "deepseek-v4-flash",
 }
 
 
@@ -184,118 +181,178 @@ def get_throughput():
 
 
 # ============================================
-# 规则分析
+# DeepSeek AI 分析
 # ============================================
 
 
-def analyze_metrics(cpu_data, memory_data, restart_data, status_data, error_data, latency_data, throughput_data):
-    """基于预设规则分析指标，检测异常"""
+def call_deepseek_api(metrics_summary):
+    """调用 DeepSeek API 进行智能分析"""
+    api_key = CONFIG.get("DEEPSEEK_API_KEY", "")
+    model = CONFIG.get("DEEPSEEK_MODEL", "deepseek-v4-flash")
+
+    if not api_key:
+        print("[警告] 未配置 DEEPSEEK_API_KEY，回退到本地规则分析")
+        return None
+
+    prompt = f"""你是一个 SRE 运维专家。以下是 Online Boutique 微服务系统的实时监控数据，请进行智能分析。
+
+监控数据：
+{metrics_summary}
+
+请按以下结构输出分析结果（纯 JSON 格式，不要包含 markdown 代码块标记）：
+
+{{
+  "severity": "normal|warning|critical",
+  "anomalies": [
+    {{"type": "异常类型", "severity": "严重等级", "detail": "详细描述"}}
+  ],
+  "suggestions": ["建议1", "建议2"],
+  "summary": "一段简短的运维分析总结"
+}}
+
+注意：
+- 如果所有指标正常，severity 为 "normal"
+- 如果有 Pod 未运行或重启过多，severity 至少为 "warning"
+- CPU 使用率超过 1.0 cores/s 或内存超过 512MB 值得关注
+- 请根据数据给出专业、具体的运维建议"""
+
+    try:
+        url = "https://api.deepseek.com/chat/completions"
+        data = json.dumps({
+            "model": model,
+            "messages": [
+                {"role": "system", "content": "你是一个专业的 SRE 运维专家，擅长分析微服务系统监控数据。请始终返回纯 JSON 格式。"},
+                {"role": "user", "content": prompt},
+            ],
+            "temperature": 0.3,
+            "max_tokens": 1500,
+        }).encode()
+
+        req = urllib.request.Request(url, data=data, headers={
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {api_key}",
+        })
+
+        with urllib.request.urlopen(req, timeout=60) as resp:
+            result = json.loads(resp.read().decode())
+
+        content = result["choices"][0]["message"]["content"]
+        # 清洗可能的 markdown 代码块
+        content = content.strip()
+        if content.startswith("```"):
+            content = content.split("\n", 1)[1]
+            if content.endswith("```"):
+                content = content[:-3]
+        content = content.strip()
+        if content.startswith("```"):
+            content = content.split("\n", 1)[1]
+            if content.endswith("```"):
+                content = content[:-3]
+            content = content.strip()
+
+        analysis = json.loads(content)
+        print("[AI] DeepSeek 分析完成")
+        return analysis
+
+    except Exception as e:
+        print(f"[AI] DeepSeek API 调用失败: {e}")
+        return None
+
+
+def ai_analyze(cpu_data, memory_data, restart_data, status_data, error_data, latency_data, throughput_data):
+    """使用 AI 进行智能分析，失败时回退到规则分析"""
+    total_pods = len(status_data)
+    running_pods = sum(1 for s in status_data if s["running"])
+    total_restarts = sum(r["restart_count"] for r in restart_data)
+    total_memory_mb = sum(m["memory_mb"] for m in memory_data)
+    avg_cpu = sum(c["cpu_cores_per_sec"] for c in cpu_data) / len(cpu_data) if cpu_data else 0
+
+    # 构建指标摘要
+    summary_parts = [
+        f"总 Pod 数: {total_pods}",
+        f"运行中 Pod: {running_pods}",
+        f"未运行 Pod: {total_pods - running_pods}",
+        f"累计重启次数: {total_restarts}",
+        f"总内存使用: {total_memory_mb:.0f} MB",
+        f"平均 CPU 使用: {avg_cpu:.4f} cores/s",
+    ]
+
+    if cpu_data:
+        summary_parts.append("\nCPU 使用 Top 5:")
+        for c in sorted(cpu_data, key=lambda x: x["cpu_cores_per_sec"], reverse=True)[:5]:
+            summary_parts.append(f"  {c['pod']}: {c['cpu_cores_per_sec']:.4f} cores/s")
+
+    if memory_data:
+        summary_parts.append("\n内存使用 Top 5:")
+        for m in sorted(memory_data, key=lambda x: x["memory_mb"], reverse=True)[:5]:
+            summary_parts.append(f"  {m['pod']}: {m['memory_mb']:.0f} MB")
+
+    if restart_data:
+        restarts_info = [r for r in restart_data if r["restart_count"] > 0]
+        if restarts_info:
+            summary_parts.append("\nPod 重启记录:")
+            for r in restarts_info:
+                summary_parts.append(f"  {r['pod']}: {r['restart_count']} 次")
+
+    summary_parts.append(f"\n可用服务比例: {running_pods}/{total_pods}")
+
+    if error_data:
+        avg_tx = sum(e["network_tx_bytes_per_sec"] for e in error_data) / len(error_data)
+        summary_parts.append(f"平均网络发送速率: {avg_tx:.0f} bytes/s")
+
+    if latency_data:
+        avg_rx = sum(l["network_rx_bytes_per_sec"] for l in latency_data) / len(latency_data)
+        summary_parts.append(f"平均网络接收速率: {avg_rx:.0f} bytes/s")
+
+    metrics_summary = "\n".join(summary_parts)
+
+    # 尝试 AI 分析
+    ai_result = call_deepseek_api(metrics_summary)
+    if ai_result and "severity" in ai_result:
+        return ai_result.get("anomalies", []), ai_result.get("severity", "normal"), ai_result.get("suggestions", [])
+
+    # 回退：本地规则分析
+    print("[AI] 回退到本地规则分析")
+    return fallback_analyze(cpu_data, memory_data, restart_data, status_data, error_data, latency_data, throughput_data)
+
+
+def fallback_analyze(cpu_data, memory_data, restart_data, status_data, error_data, latency_data, throughput_data):
+    """本地规则分析（AI 不可用时的回退方案）"""
     anomalies = []
     severity = "normal"
     suggestions = []
 
-    # 1. 检查容器运行状态
     down_pods = [s for s in status_data if not s["running"]]
     if down_pods:
-        pods_str = ", ".join(s["pod"] for s in down_pods)
-        anomalies.append({
-            "type": "pod_down",
-            "severity": "critical",
-            "detail": f"Pod 未运行: {pods_str}",
-        })
+        anomalies.append({"type": "pod_down", "severity": "critical", "detail": f"Pod 未运行: {', '.join(s['pod'] for s in down_pods)}"})
         severity = "critical"
-        suggestions.append(f"立即检查 Pod 状态: kubectl describe pod <pod_name> -n default")
+        suggestions.append("立即检查 Pod 状态")
 
-    # 2. 检查 Pod 重启
     restart_pods = [r for r in restart_data if r["restart_count"] > 0]
     if restart_pods:
-        pods_str = ", ".join(f"{r['pod']}({r['restart_count']}次)" for r in restart_pods)
-        anomalies.append({
-            "type": "pod_restart",
-            "severity": "warning",
-            "detail": f"Pod 发生重启: {pods_str}",
-        })
+        anomalies.append({"type": "pod_restart", "severity": "warning",
+            "detail": "Pod 发生重启: " + ", ".join(r["pod"] + "(" + str(r["restart_count"]) + "次)" for r in restart_pods)})
         if severity != "critical":
             severity = "warning"
-        suggestions.append("检查 Pod 日志: kubectl logs <pod_name> -n default")
+        suggestions.append("检查 Pod 日志")
 
-    # 3. 检查 CPU 使用率
     high_cpu = [c for c in cpu_data if c["cpu_cores_per_sec"] > 1.0]
     if high_cpu:
-        pods_str = ", ".join(f"{c['pod']}({c['cpu_cores_per_sec']:.2f} cores/s)" for c in high_cpu)
-        anomalies.append({
-            "type": "high_cpu",
-            "severity": "warning",
-            "detail": f"CPU 使用率偏高: {pods_str}",
-            "threshold": "1.0 cores/s",
-        })
+        anomalies.append({"type": "high_cpu", "severity": "warning", "detail": f"CPU 偏高"})
         if severity == "normal":
             severity = "warning"
-        suggestions.append("考虑扩容或检查高负载服务")
+        suggestions.append("考虑扩容")
 
-    # 4. 检查内存使用
     high_mem = [m for m in memory_data if m["memory_mb"] > 512]
     if high_mem:
-        pods_str = ", ".join(f"{m['pod']}({m['memory_mb']:.0f} MB)" for m in high_mem)
-        anomalies.append({
-            "type": "high_memory",
-            "severity": "warning",
-            "detail": f"内存使用偏高: {pods_str}",
-            "threshold": "512 MB",
-        })
+        anomalies.append({"type": "high_memory", "severity": "warning", "detail": f"内存偏高"})
         if severity == "normal":
             severity = "warning"
-        suggestions.append("检查内存泄漏或增加内存限制")
+        suggestions.append("检查内存泄漏")
 
-    # 5. 检查错误率（网络发送速率异常推断）
-    if error_data:
-        avg_tx = sum(e["network_tx_bytes_per_sec"] for e in error_data) / len(error_data)
-        if avg_tx > 50000:
-            anomalies.append({
-                "type": "error_rate",
-                "severity": "warning",
-                "detail": f"网络发送速率偏高({avg_tx:.0f} bytes/s)，可能伴随错误响应增加",
-                "threshold": "50000 bytes/s",
-            })
-            if severity == "normal":
-                severity = "warning"
-            suggestions.append("检查服务日志中的 5xx 错误")
-
-    # 6. 检查请求延迟（网络接收速率异常推断）
-    if latency_data:
-        avg_rx = sum(l["network_rx_bytes_per_sec"] for l in latency_data) / len(latency_data)
-        if avg_rx > 100000:
-            anomalies.append({
-                "type": "latency",
-                "severity": "warning",
-                "detail": f"网络接收速率偏高({avg_rx:.0f} bytes/s)，可能请求延迟升高",
-                "threshold": "100000 bytes/s",
-            })
-            if severity == "normal":
-                severity = "warning"
-            suggestions.append("排查慢查询或下游服务瓶颈")
-
-    # 7. 检查吞吐量（可用服务数量）
-    _, running_count = throughput_data
-    total = len(status_data)
-    if running_count < total * 0.5:
-        anomalies.append({
-            "type": "throughput",
-            "severity": "critical",
-            "detail": f"可用服务不足: {running_count}/{total} Pod 运行，吞吐量严重下降",
-        })
-        if severity != "critical":
-            severity = "critical"
-        suggestions.append("立即恢复已停止的服务")
-
-    # 8. 综合判断
     if not anomalies:
-        anomalies.append({
-            "type": "all_clear",
-            "severity": "info",
-            "detail": "所有服务运行正常，未检测到异常指标",
-        })
-        suggestions.append("系统状态正常，继续例行监控")
+        anomalies.append({"type": "all_clear", "severity": "info", "detail": "所有服务运行正常"})
+        suggestions.append("系统状态正常")
 
     return anomalies, severity, suggestions
 
@@ -507,10 +564,10 @@ def main():
             print(f"  延迟参考:    {len(latency_data)} 条")
             print(f"  吞吐量参考:  {throughput_data[1]} Pod 运行")
 
-        # Step 2: 规则分析
+        # Step 2: AI 智能分析
         if not args.quiet:
-            print("\n[2/4] 规则分析...")
-        anomalies, severity, suggestions = analyze_metrics(
+            print("\n[2/4] AI 智能分析...")
+        anomalies, severity, suggestions = ai_analyze(
             cpu_data, memory_data, restart_data, status_data,
             error_data, latency_data, throughput_data
         )
