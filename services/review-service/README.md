@@ -278,6 +278,18 @@ curl http://localhost:32180/reviews?product_id=OLJCESPC7Z
 
 服务启动时自带 2 条种子评价，商品 ID 为 `OLJCESPC7Z`（Online Boutique 默认商品），便于演示和测试。
 
+## 前端集成
+
+Review Service 已集成到 Online Boutique 商品详情页，评价区域包含：
+
+- **评分统计**：平均评分（保留1位小数）+ 星级分布条形图
+- **评价筛选**：全部/好评(4-5星)/中评(3星)/差评(1-2星) 标签切换
+- **情感标签**：每条评价显示 positive/neutral/negative 标签
+- **提交评价表单**：用户名、评分、评价内容
+- **优雅降级**：Review Service 不可用时显示提示，不影响商品页面其他功能
+
+集成方式：通过 Kubernetes ConfigMap 挂载修改后的 `product.html` 模板和 `review.css` 样式到 frontend Pod，无需重新编译 Go 二进制。JavaScript 在浏览器端通过 fetch 调用 Review Service API。
+
 ## 技术实现
 
 - **语言**：Python 3.12
