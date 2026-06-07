@@ -61,6 +61,12 @@
 | --- | --- | --- | --- | --- | --- |
 | 陈文涛 | 完成 Agent 模块开发与测试：`agent/grafana-email-agent/agent.py`（纯标准库，无需 pip 安装）。功能闭环已验证：获取 Prometheus 13 项指标 -> 规则分析（重启/CPU/内存异常） -> 生成分析摘要 -> 输出 JSON 报告。在服务器正常运行输出报告，检测到 Pod 重启历史异常并给出建议 | Day 8 交付数据集给陈宇轩，准备报告和 PPT 内容 | SMTP 邮件发送需用户自行填入邮箱授权码 | 需确认 SMTP 邮箱配置 | `agent/grafana-email-agent/agent.py`、`results/metrics/agent_report_20260606.json` |
 
+## Day 8（6.7）— 数据交付与报告撰写（今天）
+
+| 成员 | 今日完成 | 明日计划 | 遇到问题 | 需要协助 | 已提交材料 |
+| --- | --- | --- | --- | --- | --- |
+| 陈文涛 | 创建 `docs/data-fields.md` 数据集字段说明文档（含 4 类 CSV 字段定义 + PromQL 来源 + 异常检测建议），撰写 `docs/report-monitoring.md` 监控部分报告和 `docs/report-agent.md` Agent 模块报告（含 AI 分析、功能闭环、技术实现、模块亮点），完成故障场景数据采集与仓库提交 | Day 9-10 配合袁正泽汇总报告 PPT | 暂无 | 无 | `docs/data-fields.md`、`docs/report-monitoring.md`、`docs/report-agent.md`、故障数据集 |
+
 ## Day 8 - Day 10
 
 后续日期按同样格式追加。每天结束前，袁正泽检查是否存在阻塞项，并在群里同步第二天重点。
