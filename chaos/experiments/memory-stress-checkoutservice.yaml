@@ -1,0 +1,17 @@
+apiVersion: chaos-mesh.org/v1alpha1
+kind: StressChaos
+metadata:
+  name: memory-stress-checkoutservice
+  namespace: chaos-mesh
+spec:
+  mode: one
+  selector:
+    namespaces:
+      - default
+    labelSelectors:
+      app: checkoutservice
+  stressors:
+    memory:
+      workers: 2
+      size: "256MB"
+  duration: "120s"

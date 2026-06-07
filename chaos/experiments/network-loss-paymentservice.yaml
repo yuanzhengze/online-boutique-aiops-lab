@@ -1,0 +1,17 @@
+apiVersion: chaos-mesh.org/v1alpha1
+kind: NetworkChaos
+metadata:
+  name: network-loss-paymentservice
+  namespace: chaos-mesh
+spec:
+  action: loss
+  mode: one
+  selector:
+    namespaces:
+      - default
+    labelSelectors:
+      app: paymentservice
+  loss:
+    loss: "35%"
+    correlation: "50"
+  duration: "120s"

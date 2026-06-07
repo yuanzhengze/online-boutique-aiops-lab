@@ -2,9 +2,17 @@
 
 本目录用于存放新增微服务源码。
 
-## 当前规划
+## 当前服务
 
-- `review-service/`：商品评价服务，支持评价查询、评价提交和评分统计。
+### review-service/：商品评价服务
+
+- **功能**：支持评价查询、评价提交和评分统计
+- **技术栈**：Python 3.12 标准库（ThreadingHTTPServer），零外部依赖
+- **API 端点**：5 个（/healthz、/reviews、/reviews/summary、POST /reviews、/metrics）
+- **部署方式**：Docker 容器化 + K8s Deployment（NodePort 32180）
+- **前端集成**：商品详情页底部展示评价区域（通过 ConfigMap 挂载模板）
+- **监控**：Prometheus 自动采集（Pod 注解 + /metrics 端点）
+- **详细文档**：[services/review-service/README.md](review-service/README.md)
 
 ## 提交要求
 

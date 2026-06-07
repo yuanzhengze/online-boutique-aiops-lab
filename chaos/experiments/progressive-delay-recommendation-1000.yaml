@@ -1,0 +1,19 @@
+# 渐进式延迟 - recommendationservice 1000ms
+apiVersion: chaos-mesh.org/v1alpha1
+kind: NetworkChaos
+metadata:
+  name: progressive-delay-recommendation-1000
+  namespace: chaos-mesh
+spec:
+  action: delay
+  mode: one
+  selector:
+    namespaces:
+      - default
+    labelSelectors:
+      app: recommendationservice
+  delay:
+    latency: "1000ms"
+    correlation: "50"
+    jitter: "200ms"
+  duration: "120s"

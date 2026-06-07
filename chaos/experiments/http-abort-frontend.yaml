@@ -1,0 +1,23 @@
+# HTTPChaos: 对frontend注入HTTP 500错误
+# 在HTTP层直接返回500，比网络丢包更精确地模拟服务端错误
+apiVersion: chaos-mesh.org/v1alpha1
+kind: HTTPChaos
+metadata:
+  name: http-abort-frontend
+  namespace: chaos-mesh
+spec:
+  mode: one
+  selector:
+    namespaces:
+      - default
+    labelSelectors:
+      app: frontend
+  target: Request
+  port: 8080
+  method:
+    - GET
+  path:
+    - "/"
+    - "/product/*"
+  abort: true
+  duration: "120s"

@@ -1,0 +1,18 @@
+# TimeChaos: 对recommendationservice注入时钟偏移
+# 模拟分布式系统中时钟不同步，影响超时判断和日志时间戳
+apiVersion: chaos-mesh.org/v1alpha1
+kind: TimeChaos
+metadata:
+  name: time-skew-recommendation
+  namespace: chaos-mesh
+spec:
+  mode: one
+  selector:
+    namespaces:
+      - default
+    labelSelectors:
+      app: recommendationservice
+  timeOffset: "-10s"
+  clockIds:
+    - CLOCK_REALTIME
+  duration: "120s"

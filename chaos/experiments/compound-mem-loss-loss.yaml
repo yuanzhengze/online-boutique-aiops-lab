@@ -1,0 +1,18 @@
+# 复合故障3: 网络丢包部分（与上面同时注入）
+apiVersion: chaos-mesh.org/v1alpha1
+kind: NetworkChaos
+metadata:
+  name: compound-mem-loss-loss
+  namespace: chaos-mesh
+spec:
+  action: loss
+  mode: one
+  selector:
+    namespaces:
+      - default
+    labelSelectors:
+      app: currencyservice
+  loss:
+    loss: "20%"
+    correlation: "50"
+  duration: "120s"

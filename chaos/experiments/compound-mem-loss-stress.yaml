@@ -1,0 +1,19 @@
+# 复合故障3: 内存压力 + 网络丢包 - currencyservice
+# 模拟内存泄漏同时网络不稳定的场景
+apiVersion: chaos-mesh.org/v1alpha1
+kind: StressChaos
+metadata:
+  name: compound-mem-loss-stress
+  namespace: chaos-mesh
+spec:
+  mode: one
+  selector:
+    namespaces:
+      - default
+    labelSelectors:
+      app: currencyservice
+  stressors:
+    memory:
+      workers: 4
+      size: "512MB"
+  duration: "120s"

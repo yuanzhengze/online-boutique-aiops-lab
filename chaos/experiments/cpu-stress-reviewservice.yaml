@@ -1,0 +1,19 @@
+apiVersion: chaos-mesh.org/v1alpha1
+kind: StressChaos
+metadata:
+  name: cpu-stress-review-service
+  namespace: chaos-mesh
+spec:
+  mode: one
+  selector:
+    namespaces:
+      - default
+    labelSelectors:
+      app: review-service
+  stressors:
+    cpu:
+      workers: 2
+      load: 80
+  duration: "120s"
+  scheduler:
+    cron: "@every 600s"

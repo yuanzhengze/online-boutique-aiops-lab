@@ -1,0 +1,19 @@
+# 复合故障2: 网络延迟部分（与上面同时注入）
+apiVersion: chaos-mesh.org/v1alpha1
+kind: NetworkChaos
+metadata:
+  name: compound-checkout-delay
+  namespace: chaos-mesh
+spec:
+  action: delay
+  mode: one
+  selector:
+    namespaces:
+      - default
+    labelSelectors:
+      app: checkoutservice
+  delay:
+    latency: "800ms"
+    correlation: "50"
+    jitter: "200ms"
+  duration: "120s"

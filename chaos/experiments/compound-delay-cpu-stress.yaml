@@ -1,0 +1,18 @@
+# 复合故障1: CPU压力部分（与上面同时注入）
+apiVersion: chaos-mesh.org/v1alpha1
+kind: StressChaos
+metadata:
+  name: compound-delay-cpu-stress
+  namespace: chaos-mesh
+spec:
+  mode: one
+  selector:
+    namespaces:
+      - default
+    labelSelectors:
+      app: productcatalogservice
+  stressors:
+    cpu:
+      workers: 4
+      load: 90
+  duration: "120s"

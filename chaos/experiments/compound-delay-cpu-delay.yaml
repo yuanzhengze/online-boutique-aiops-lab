@@ -1,0 +1,20 @@
+# 复合故障1: 网络延迟 + CPU压力 - productcatalogservice
+# 同时注入网络延迟和CPU压力，模拟级联故障
+apiVersion: chaos-mesh.org/v1alpha1
+kind: NetworkChaos
+metadata:
+  name: compound-delay-cpu-delay
+  namespace: chaos-mesh
+spec:
+  action: delay
+  mode: one
+  selector:
+    namespaces:
+      - default
+    labelSelectors:
+      app: productcatalogservice
+  delay:
+    latency: "300ms"
+    correlation: "50"
+    jitter: "50ms"
+  duration: "120s"
