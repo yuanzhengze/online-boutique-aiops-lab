@@ -1,0 +1,14 @@
+timestamp,pod,namespace,container,value
+fault_netdelay_20260607,currencyservice-8c464cb79-29d2t,default,unknown,0.012567055900279022
+fault_netdelay_20260607,checkoutservice-5987dfd54c-vq6m5,default,unknown,0.0016158263040716183
+fault_netdelay_20260607,recommendationservice-6486d59c4c-dvxb9,default,unknown,0.015748885296765977
+fault_netdelay_20260607,paymentservice-5d879448df-7qrln,default,unknown,0.0022739627040421506
+fault_netdelay_20260607,adservice-8d9d67f7-n6z9t,default,unknown,0.003739453445178787
+fault_netdelay_20260607,redis-cart-7ff8f4d6ff-64q8m,default,unknown,0.006211339851654535
+fault_netdelay_20260607,emailservice-56bc5695dc-k7ngk,default,unknown,0.004907530679708485
+fault_netdelay_20260607,shippingservice-69cbf7c6c7-5sn8c,default,unknown,0.0017517726756592544
+fault_netdelay_20260607,loadgenerator-5fbff6bbfd-n2pfw,default,unknown,0.01106604426604147
+fault_netdelay_20260607,productcatalogservice-64cd8c46d9-wt6rt,default,unknown,0.014528880774196298
+fault_netdelay_20260607,frontend-6dd45b5f74-4zl95,default,unknown,0.029439409641697493
+fault_netdelay_20260607,review-service-6666fdc7db-mf5l4,default,unknown,0.0004874111076176411
+fault_netdelay_20260607,cartservice-7b6889d85b-qjl89,default,unknown,0.012396417078320038
