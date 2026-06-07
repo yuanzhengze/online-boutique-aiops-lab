@@ -1,0 +1,14 @@
+timestamp,pod,namespace,container,value
+normal_baseline_20260607,currencyservice-8c464cb79-29d2t,default,server,1
+normal_baseline_20260607,checkoutservice-5987dfd54c-vq6m5,default,server,1
+normal_baseline_20260607,adservice-8d9d67f7-n6z9t,default,server,1
+normal_baseline_20260607,recommendationservice-6486d59c4c-dvxb9,default,server,1
+normal_baseline_20260607,review-service-6666fdc7db-mf5l4,default,review-service,1
+normal_baseline_20260607,paymentservice-5d879448df-7qrln,default,server,1
+normal_baseline_20260607,productcatalogservice-64cd8c46d9-wt6rt,default,server,1
+normal_baseline_20260607,emailservice-56bc5695dc-k7ngk,default,server,1
+normal_baseline_20260607,frontend-6dd45b5f74-4zl95,default,server,1
+normal_baseline_20260607,shippingservice-69cbf7c6c7-5sn8c,default,server,1
+normal_baseline_20260607,redis-cart-7ff8f4d6ff-64q8m,default,redis,1
+normal_baseline_20260607,loadgenerator-5fbff6bbfd-n2pfw,default,main,1
+normal_baseline_20260607,cartservice-7b6889d85b-8f8r7,default,server,1
