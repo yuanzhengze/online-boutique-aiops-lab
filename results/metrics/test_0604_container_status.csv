@@ -1,0 +1,15 @@
+timestamp,pod,namespace,container,value
+test_0604,productcatalogservice-64cd8c46d9-wt6rt,default,server,1
+test_0604,adservice-8d9d67f7-n6z9t,default,server,1
+test_0604,checkoutservice-5987dfd54c-vq6m5,default,server,1
+test_0604,loadgenerator-746ffcd44c-tntzd,default,main,1
+test_0604,recommendationservice-6486d59c4c-dvxb9,default,server,1
+test_0604,currencyservice-8c464cb79-jn8cj,default,server,1
+test_0604,emailservice-56bc5695dc-k7ngk,default,server,1
+test_0604,frontend-849f6b48f8-zczzz,default,server,1
+test_0604,paymentservice-5d879448df-7qrln,default,server,1
+test_0604,cartservice-7b6889d85b-zq72k,default,server,1
+test_0604,test-proxy,default,test-proxy,0
+test_0604,shippingservice-69cbf7c6c7-5sn8c,default,server,1
+test_0604,redis-cart-7ff8f4d6ff-64q8m,default,redis,1
+test_0604,review-service-6666fdc7db-mf5l4,default,review-service,1
