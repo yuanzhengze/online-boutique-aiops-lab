@@ -12,16 +12,13 @@
 - [ ] 每日进度记录已维护。
 - [ ] 成员贡献说明已汇总。
 
-## 黄开轩→谭张锐：Review Service
+## 黄开轩：Review Service 后端 + Agent协助
 
-- [x] Review Service 源码完成。
+- [x] Review Service 后端源码完成（API设计、数据模型、服务逻辑）。
 - [x] API 文档完成。
 - [x] Dockerfile 完成。
 - [x] Kubernetes YAML 完成。
-- [x] 服务可独立运行。
-- [x] 服务可通过 API 调用。
-- [x] 前端集成完成（商品详情页显示评价区域）。
-- [x] Review Service 故障注入实验完成（PodKill/NetworkDelay/CPUStress）。
+- [x] 协助 Agent 模块工程实现。
 - [ ] 微服务开发报告内容和 PPT 页面完成。
 
 ## 陈宇轩：论文复现
@@ -44,19 +41,21 @@
 - [ ] Agent 可发送邮件。
 - [ ] 监控与 Agent 报告内容和 PPT 页面完成。
 
-## 谭张锐：故障注入与性能测试 + Review Service
+## 谭张锐：故障注入与性能测试 + Review Service 前端集成与部署
 
 - [x] ChaosMesh 部署完成。
-- [x] 至少 3 类故障注入成功。（已完成5大类16种故障注入，含Review Service 3种）
+- [x] 至少 3 类故障注入成功。（已完成5大类22种故障注入，含Review Service 3种）
 - [x] JMeter 测试计划完成。
 - [x] 性能测试结果完成。
 - [x] 故障注入记录表完成。
-- [x] Review Service 源码、Dockerfile、K8s配置提交到仓库。
-- [x] Review Service API文档完成。
-- [x] Review Service 前端集成完成。
-- [x] Review Service 故障注入实验完成。
-- [ ] 故障注入和性能测试报告内容及 PPT 页面完成。
-- [ ] 微服务开发报告内容和 PPT 页面完成。
+- [x] 自动化循环注入脚本v4完成。
+- [x] Review Service Docker构建与K8s部署完成。
+- [x] Review Service 前端集成完成（评价展示、筛选标签、情感标签、提交表单、优雅降级、视觉美化）。
+- [x] Review Service 故障注入实验完成（PodKill/NetworkDelay/CPUStress）。
+- [x] 运维排障记录完成（6项问题及解决方案）。
+- [x] 谭张锐负责部分实验报告完成。
+- [ ] 故障注入和性能测试 PPT 页面完成。
+- [ ] 微服务开发 PPT 页面完成。
 
 ## 傅昱翔：功能测试
 
