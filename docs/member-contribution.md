@@ -8,7 +8,7 @@
 | 黄开轩 | 微服务开发 + Agent协助 | Review Service 后端设计与实现（API设计、数据模型、服务逻辑）；协助 Agent 模块工程实现（接口调用、脚本封装）；系统架构设计 | 服务源码、API 文档、K8s 配置、Agent 协助记录 | `services/review-service/app.py` |
 | 陈宇轩 | 论文复现 | 算法框架、论文复现、数据预处理和多算法对比 | 算法代码、实验图表、对比分析 |  |
 | 陈文涛 | 监控与 Agent | Prometheus、Grafana 部署验证、Dashboard 配置、数据采集脚本、DeepSeek AI 邮件通知 Agent | Prometheus 配置（`monitoring/prometheus/prometheus-config.yaml`）、Grafana 数据源配置（`monitoring/grafana/datasource.yaml`）、数据采集脚本（`monitoring/collect_metrics.py`）、监控操作指南（`monitoring/README.md`）、Agent 源码（`agent/grafana-email-agent/agent.py`）、配置模板（`agent/grafana-email-agent/.env.example`）、正常/故障场景数据集 | `monitoring/` 目录、`agent/grafana-email-agent/` 目录、`results/screenshots/`、`results/metrics/`、`docs/daily-progress.md` |
-| 谭张锐 | 故障注入与性能测试 + Review Service | ChaosMesh 实验（5种核心故障×随机3-5次循环注入）、JMeter 性能测试、故障场景设计、自动化循环注入脚本（v1-v4迭代）；Review Service 前端集成（评价展示、筛选标签、情感标签、提交表单、优雅降级）、前端视觉美化；运维排障（Grafana/Chaos Dashboard端口冲突、Prometheus采集中断、CSS不生效等6项） | 故障配置、测试计划、性能结果、自动化注入脚本v4、Review Service前端集成、运维排障记录 | `chaos/experiments/`、`chaos/chaos_loop_v4.sh`、`tests/jmeter/`、`services/review-service/`、`docs/deployment.md` |
+| 谭张锐 | 故障注入与性能测试 + Review Service 微服务开发 | ChaosMesh 实验（5种核心故障×随机3-5次循环注入）、JMeter 性能测试、故障场景设计、自动化循环注入脚本（v1-v4迭代）；Review Service 完整开发（需求分析、API设计与实现、Docker容器化、K8s部署、前端集成含评价展示/筛选标签/情感标签/提交表单/优雅降级/视觉美化、Prometheus监控集成）；运维排障（Grafana/Chaos Dashboard端口冲突、Prometheus采集中断、CSS不生效等6项） | 故障配置、测试计划、性能结果、自动化注入脚本v4、Review Service完整开发（源码+Docker+K8s+前端）、运维排障记录 | `chaos/experiments/`、`chaos/chaos_loop_v4.sh`、`tests/jmeter/`、`services/review-service/`、`docs/deployment.md` |
 | 傅昱翔 | 功能测试 | Selenium 测试、新增服务验证、轻量论文复现辅助 | 测试脚本、测试截图、测试记录 |  |
 
 ## 贡献说明写法
