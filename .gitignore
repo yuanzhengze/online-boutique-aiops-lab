@@ -42,3 +42,6 @@ secrets.yaml
 *.tar.gz
 *.tgz
 
+# PPT files (too large for git)
+*.pptx
+

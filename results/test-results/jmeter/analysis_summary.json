@@ -1,0 +1,1208 @@
+{
+  "baseline-10u": {
+    "total": 6052,
+    "success": 6052,
+    "errors": 0,
+    "error_rate": "0.00%",
+    "avg_rt": 159,
+    "min_rt": 11,
+    "max_rt": 1000,
+    "p50": 182,
+    "p90": 211,
+    "p95": 290,
+    "p99": 312,
+    "throughput": "76.5",
+    "labels": {
+      "Homepage": 871,
+      "Product Page": 867,
+      "Add to Cart": 864,
+      "Add to Cart-0": 863,
+      "Add to Cart-1": 863,
+      "Cart Page": 863,
+      "Checkout": 861
+    },
+    "label_stats": {
+      "Homepage": {
+        "avg": 176,
+        "success": 871,
+        "error": 0,
+        "count": 871
+      },
+      "Product Page": {
+        "avg": 158,
+        "success": 867,
+        "error": 0,
+        "count": 867
+      },
+      "Add to Cart": {
+        "avg": 229,
+        "success": 864,
+        "error": 0,
+        "count": 864
+      },
+      "Add to Cart-0": {
+        "avg": 87,
+        "success": 863,
+        "error": 0,
+        "count": 863
+      },
+      "Add to Cart-1": {
+        "avg": 142,
+        "success": 863,
+        "error": 0,
+        "count": 863
+      },
+      "Cart Page": {
+        "avg": 158,
+        "success": 863,
+        "error": 0,
+        "count": 863
+      },
+      "Checkout": {
+        "avg": 165,
+        "success": 861,
+        "error": 0,
+        "count": 861
+      }
+    }
+  },
+  "baseline-50u": {
+    "total": 9508,
+    "success": 9508,
+    "errors": 0,
+    "error_rate": "0.00%",
+    "avg_rt": 515,
+    "min_rt": 13,
+    "max_rt": 4684,
+    "p50": 509,
+    "p90": 795,
+    "p95": 813,
+    "p99": 999,
+    "throughput": "113.3",
+    "labels": {
+      "Homepage": 1374,
+      "Product Page": 1367,
+      "Add to Cart": 1359,
+      "Add to Cart-0": 1359,
+      "Add to Cart-1": 1359,
+      "Cart Page": 1347,
+      "Checkout": 1343
+    },
+    "label_stats": {
+      "Homepage": {
+        "avg": 671,
+        "success": 1374,
+        "error": 0,
+        "count": 1374
+      },
+      "Product Page": {
+        "avg": 503,
+        "success": 1367,
+        "error": 0,
+        "count": 1367
+      },
+      "Add to Cart": {
+        "avg": 698,
+        "success": 1359,
+        "error": 0,
+        "count": 1359
+      },
+      "Add to Cart-0": {
+        "avg": 139,
+        "success": 1359,
+        "error": 0,
+        "count": 1359
+      },
+      "Add to Cart-1": {
+        "avg": 558,
+        "success": 1359,
+        "error": 0,
+        "count": 1359
+      },
+      "Cart Page": {
+        "avg": 551,
+        "success": 1347,
+        "error": 0,
+        "count": 1347
+      },
+      "Checkout": {
+        "avg": 481,
+        "success": 1343,
+        "error": 0,
+        "count": 1343
+      }
+    }
+  },
+  "baseline-100u": {
+    "total": 11391,
+    "success": 11391,
+    "errors": 0,
+    "error_rate": "0.00%",
+    "avg_rt": 910,
+    "min_rt": 11,
+    "max_rt": 4464,
+    "p50": 993,
+    "p90": 1307,
+    "p95": 1492,
+    "p99": 3120,
+    "throughput": "122.2",
+    "labels": {
+      "Homepage": 1666,
+      "Product Page": 1643,
+      "Add to Cart": 1631,
+      "Add to Cart-0": 1631,
+      "Add to Cart-1": 1631,
+      "Cart Page": 1601,
+      "Checkout": 1588
+    },
+    "label_stats": {
+      "Homepage": {
+        "avg": 999,
+        "success": 1666,
+        "error": 0,
+        "count": 1666
+      },
+      "Product Page": {
+        "avg": 963,
+        "success": 1643,
+        "error": 0,
+        "count": 1643
+      },
+      "Add to Cart": {
+        "avg": 1230,
+        "success": 1631,
+        "error": 0,
+        "count": 1631
+      },
+      "Add to Cart-0": {
+        "avg": 212,
+        "success": 1631,
+        "error": 0,
+        "count": 1631
+      },
+      "Add to Cart-1": {
+        "avg": 1017,
+        "success": 1631,
+        "error": 0,
+        "count": 1631
+      },
+      "Cart Page": {
+        "avg": 1043,
+        "success": 1601,
+        "error": 0,
+        "count": 1601
+      },
+      "Checkout": {
+        "avg": 904,
+        "success": 1588,
+        "error": 0,
+        "count": 1588
+      }
+    }
+  },
+  "pod-kill-cartservice-10u": {
+    "total": 5645,
+    "success": 3463,
+    "errors": 2182,
+    "error_rate": "38.65%",
+    "avg_rt": 114,
+    "min_rt": 11,
+    "max_rt": 2386,
+    "p50": 99,
+    "p90": 201,
+    "p95": 208,
+    "p99": 300,
+    "throughput": "71.5",
+    "labels": {
+      "Add to Cart": 1701,
+      "Checkout": 1698,
+      "Product Page": 449,
+      "Add to Cart-0": 451,
+      "Add to Cart-1": 451,
+      "Cart Page": 449,
+      "Homepage": 446
+    },
+    "label_stats": {
+      "Add to Cart": {
+        "avg": 94,
+        "success": 451,
+        "error": 1250,
+        "count": 1701
+      },
+      "Checkout": {
+        "avg": 109,
+        "success": 766,
+        "error": 932,
+        "count": 1698
+      },
+      "Product Page": {
+        "avg": 142,
+        "success": 449,
+        "error": 0,
+        "count": 449
+      },
+      "Add to Cart-0": {
+        "avg": 80,
+        "success": 451,
+        "error": 0,
+        "count": 451
+      },
+      "Add to Cart-1": {
+        "avg": 134,
+        "success": 451,
+        "error": 0,
+        "count": 451
+      },
+      "Cart Page": {
+        "avg": 139,
+        "success": 449,
+        "error": 0,
+        "count": 449
+      },
+      "Homepage": {
+        "avg": 172,
+        "success": 446,
+        "error": 0,
+        "count": 446
+      }
+    }
+  },
+  "pod-kill-cartservice-50u": {
+    "total": 10018,
+    "success": 10018,
+    "errors": 0,
+    "error_rate": "0.00%",
+    "avg_rt": 487,
+    "min_rt": 14,
+    "max_rt": 2902,
+    "p50": 501,
+    "p90": 722,
+    "p95": 807,
+    "p99": 1006,
+    "throughput": "119.9",
+    "labels": {
+      "Homepage": 1449,
+      "Product Page": 1445,
+      "Add to Cart": 1433,
+      "Add to Cart-0": 1433,
+      "Add to Cart-1": 1433,
+      "Cart Page": 1419,
+      "Checkout": 1406
+    },
+    "label_stats": {
+      "Homepage": {
+        "avg": 635,
+        "success": 1449,
+        "error": 0,
+        "count": 1449
+      },
+      "Product Page": {
+        "avg": 489,
+        "success": 1445,
+        "error": 0,
+        "count": 1445
+      },
+      "Add to Cart": {
+        "avg": 656,
+        "success": 1433,
+        "error": 0,
+        "count": 1433
+      },
+      "Add to Cart-0": {
+        "avg": 149,
+        "success": 1433,
+        "error": 0,
+        "count": 1433
+      },
+      "Add to Cart-1": {
+        "avg": 507,
+        "success": 1433,
+        "error": 0,
+        "count": 1433
+      },
+      "Cart Page": {
+        "avg": 512,
+        "success": 1419,
+        "error": 0,
+        "count": 1419
+      },
+      "Checkout": {
+        "avg": 463,
+        "success": 1406,
+        "error": 0,
+        "count": 1406
+      }
+    }
+  },
+  "pod-kill-cartservice-100u": {
+    "total": 11446,
+    "success": 11446,
+    "errors": 0,
+    "error_rate": "0.00%",
+    "avg_rt": 905,
+    "min_rt": 16,
+    "max_rt": 3096,
+    "p50": 998,
+    "p90": 1398,
+    "p95": 1501,
+    "p99": 1811,
+    "throughput": "123.1",
+    "labels": {
+      "Homepage": 1672,
+      "Product Page": 1657,
+      "Add to Cart": 1634,
+      "Add to Cart-0": 1634,
+      "Add to Cart-1": 1634,
+      "Cart Page": 1617,
+      "Checkout": 1598
+    },
+    "label_stats": {
+      "Homepage": {
+        "avg": 946,
+        "success": 1672,
+        "error": 0,
+        "count": 1672
+      },
+      "Product Page": {
+        "avg": 966,
+        "success": 1657,
+        "error": 0,
+        "count": 1657
+      },
+      "Add to Cart": {
+        "avg": 1231,
+        "success": 1634,
+        "error": 0,
+        "count": 1634
+      },
+      "Add to Cart-0": {
+        "avg": 197,
+        "success": 1634,
+        "error": 0,
+        "count": 1634
+      },
+      "Add to Cart-1": {
+        "avg": 1034,
+        "success": 1634,
+        "error": 0,
+        "count": 1634
+      },
+      "Cart Page": {
+        "avg": 1041,
+        "success": 1617,
+        "error": 0,
+        "count": 1617
+      },
+      "Checkout": {
+        "avg": 923,
+        "success": 1598,
+        "error": 0,
+        "count": 1598
+      }
+    }
+  },
+  "network-delay-recommendation-10u": {
+    "total": 5924,
+    "success": 5924,
+    "errors": 0,
+    "error_rate": "0.00%",
+    "avg_rt": 163,
+    "min_rt": 10,
+    "max_rt": 1207,
+    "p50": 177,
+    "p90": 213,
+    "p95": 295,
+    "p99": 706,
+    "throughput": "74.9",
+    "labels": {
+      "Homepage": 850,
+      "Product Page": 849,
+      "Add to Cart": 847,
+      "Add to Cart-0": 846,
+      "Add to Cart-1": 846,
+      "Cart Page": 844,
+      "Checkout": 842
+    },
+    "label_stats": {
+      "Homepage": {
+        "avg": 174,
+        "success": 850,
+        "error": 0,
+        "count": 850
+      },
+      "Product Page": {
+        "avg": 159,
+        "success": 849,
+        "error": 0,
+        "count": 849
+      },
+      "Add to Cart": {
+        "avg": 236,
+        "success": 847,
+        "error": 0,
+        "count": 847
+      },
+      "Add to Cart-0": {
+        "avg": 93,
+        "success": 846,
+        "error": 0,
+        "count": 846
+      },
+      "Add to Cart-1": {
+        "avg": 143,
+        "success": 846,
+        "error": 0,
+        "count": 846
+      },
+      "Cart Page": {
+        "avg": 166,
+        "success": 844,
+        "error": 0,
+        "count": 844
+      },
+      "Checkout": {
+        "avg": 170,
+        "success": 842,
+        "error": 0,
+        "count": 842
+      }
+    }
+  },
+  "network-delay-recommendation-50u": {
+    "total": 8675,
+    "success": 8675,
+    "errors": 0,
+    "error_rate": "0.00%",
+    "avg_rt": 563,
+    "min_rt": 12,
+    "max_rt": 2686,
+    "p50": 597,
+    "p90": 816,
+    "p95": 909,
+    "p99": 1196,
+    "throughput": "103.6",
+    "labels": {
+      "Homepage": 1261,
+      "Product Page": 1247,
+      "Add to Cart": 1237,
+      "Add to Cart-0": 1237,
+      "Add to Cart-1": 1237,
+      "Cart Page": 1231,
+      "Checkout": 1225
+    },
+    "label_stats": {
+      "Homepage": {
+        "avg": 714,
+        "success": 1261,
+        "error": 0,
+        "count": 1261
+      },
+      "Product Page": {
+        "avg": 565,
+        "success": 1247,
+        "error": 0,
+        "count": 1247
+      },
+      "Add to Cart": {
+        "avg": 760,
+        "success": 1237,
+        "error": 0,
+        "count": 1237
+      },
+      "Add to Cart-0": {
+        "avg": 161,
+        "success": 1237,
+        "error": 0,
+        "count": 1237
+      },
+      "Add to Cart-1": {
+        "avg": 598,
+        "success": 1237,
+        "error": 0,
+        "count": 1237
+      },
+      "Cart Page": {
+        "avg": 607,
+        "success": 1231,
+        "error": 0,
+        "count": 1231
+      },
+      "Checkout": {
+        "avg": 532,
+        "success": 1225,
+        "error": 0,
+        "count": 1225
+      }
+    }
+  },
+  "network-delay-recommendation-100u": {
+    "total": 10559,
+    "success": 10559,
+    "errors": 0,
+    "error_rate": "0.00%",
+    "avg_rt": 980,
+    "min_rt": 12,
+    "max_rt": 2738,
+    "p50": 1085,
+    "p90": 1515,
+    "p95": 1676,
+    "p99": 2024,
+    "throughput": "113.5",
+    "labels": {
+      "Homepage": 1545,
+      "Product Page": 1524,
+      "Add to Cart": 1511,
+      "Add to Cart-0": 1511,
+      "Add to Cart-1": 1511,
+      "Cart Page": 1479,
+      "Checkout": 1478
+    },
+    "label_stats": {
+      "Homepage": {
+        "avg": 1020,
+        "success": 1545,
+        "error": 0,
+        "count": 1545
+      },
+      "Product Page": {
+        "avg": 1046,
+        "success": 1524,
+        "error": 0,
+        "count": 1524
+      },
+      "Add to Cart": {
+        "avg": 1336,
+        "success": 1511,
+        "error": 0,
+        "count": 1511
+      },
+      "Add to Cart-0": {
+        "avg": 232,
+        "success": 1511,
+        "error": 0,
+        "count": 1511
+      },
+      "Add to Cart-1": {
+        "avg": 1103,
+        "success": 1511,
+        "error": 0,
+        "count": 1511
+      },
+      "Cart Page": {
+        "avg": 1102,
+        "success": 1479,
+        "error": 0,
+        "count": 1479
+      },
+      "Checkout": {
+        "avg": 1024,
+        "success": 1478,
+        "error": 0,
+        "count": 1478
+      }
+    }
+  },
+  "network-loss-frontend-10u": {
+    "total": 6252,
+    "success": 6252,
+    "errors": 0,
+    "error_rate": "0.00%",
+    "avg_rt": 152,
+    "min_rt": 10,
+    "max_rt": 2390,
+    "p50": 116,
+    "p90": 213,
+    "p95": 287,
+    "p99": 699,
+    "throughput": "79.4",
+    "labels": {
+      "Homepage": 898,
+      "Product Page": 898,
+      "Add to Cart": 892,
+      "Add to Cart-0": 891,
+      "Add to Cart-1": 891,
+      "Cart Page": 891,
+      "Checkout": 891
+    },
+    "label_stats": {
+      "Homepage": {
+        "avg": 173,
+        "success": 898,
+        "error": 0,
+        "count": 898
+      },
+      "Product Page": {
+        "avg": 151,
+        "success": 898,
+        "error": 0,
+        "count": 898
+      },
+      "Add to Cart": {
+        "avg": 212,
+        "success": 892,
+        "error": 0,
+        "count": 892
+      },
+      "Add to Cart-0": {
+        "avg": 79,
+        "success": 891,
+        "error": 0,
+        "count": 891
+      },
+      "Add to Cart-1": {
+        "avg": 133,
+        "success": 891,
+        "error": 0,
+        "count": 891
+      },
+      "Cart Page": {
+        "avg": 157,
+        "success": 891,
+        "error": 0,
+        "count": 891
+      },
+      "Checkout": {
+        "avg": 159,
+        "success": 891,
+        "error": 0,
+        "count": 891
+      }
+    }
+  },
+  "network-loss-frontend-50u": {
+    "total": 9569,
+    "success": 9569,
+    "errors": 0,
+    "error_rate": "0.00%",
+    "avg_rt": 513,
+    "min_rt": 10,
+    "max_rt": 3081,
+    "p50": 506,
+    "p90": 796,
+    "p95": 918,
+    "p99": 1295,
+    "throughput": "114.2",
+    "labels": {
+      "Homepage": 1394,
+      "Product Page": 1379,
+      "Add to Cart": 1366,
+      "Add to Cart-0": 1366,
+      "Add to Cart-1": 1366,
+      "Cart Page": 1353,
+      "Checkout": 1345
+    },
+    "label_stats": {
+      "Homepage": {
+        "avg": 629,
+        "success": 1394,
+        "error": 0,
+        "count": 1394
+      },
+      "Product Page": {
+        "avg": 517,
+        "success": 1379,
+        "error": 0,
+        "count": 1379
+      },
+      "Add to Cart": {
+        "avg": 699,
+        "success": 1366,
+        "error": 0,
+        "count": 1366
+      },
+      "Add to Cart-0": {
+        "avg": 172,
+        "success": 1366,
+        "error": 0,
+        "count": 1366
+      },
+      "Add to Cart-1": {
+        "avg": 526,
+        "success": 1366,
+        "error": 0,
+        "count": 1366
+      },
+      "Cart Page": {
+        "avg": 536,
+        "success": 1353,
+        "error": 0,
+        "count": 1353
+      },
+      "Checkout": {
+        "avg": 511,
+        "success": 1345,
+        "error": 0,
+        "count": 1345
+      }
+    }
+  },
+  "network-loss-frontend-100u": {
+    "total": 11702,
+    "success": 11702,
+    "errors": 0,
+    "error_rate": "0.00%",
+    "avg_rt": 895,
+    "min_rt": 12,
+    "max_rt": 5373,
+    "p50": 967,
+    "p90": 1339,
+    "p95": 1487,
+    "p99": 2020,
+    "throughput": "125.1",
+    "labels": {
+      "Homepage": 1710,
+      "Product Page": 1688,
+      "Add to Cart": 1675,
+      "Add to Cart-0": 1675,
+      "Add to Cart-1": 1675,
+      "Cart Page": 1655,
+      "Checkout": 1624
+    },
+    "label_stats": {
+      "Homepage": {
+        "avg": 954,
+        "success": 1710,
+        "error": 0,
+        "count": 1710
+      },
+      "Product Page": {
+        "avg": 958,
+        "success": 1688,
+        "error": 0,
+        "count": 1688
+      },
+      "Add to Cart": {
+        "avg": 1237,
+        "success": 1675,
+        "error": 0,
+        "count": 1675
+      },
+      "Add to Cart-0": {
+        "avg": 243,
+        "success": 1675,
+        "error": 0,
+        "count": 1675
+      },
+      "Add to Cart-1": {
+        "avg": 993,
+        "success": 1675,
+        "error": 0,
+        "count": 1675
+      },
+      "Cart Page": {
+        "avg": 989,
+        "success": 1655,
+        "error": 0,
+        "count": 1655
+      },
+      "Checkout": {
+        "avg": 890,
+        "success": 1624,
+        "error": 0,
+        "count": 1624
+      }
+    }
+  },
+  "cpu-stress-productcatalog-10u": {
+    "total": 6060,
+    "success": 6060,
+    "errors": 0,
+    "error_rate": "0.00%",
+    "avg_rt": 159,
+    "min_rt": 11,
+    "max_rt": 2280,
+    "p50": 132,
+    "p90": 222,
+    "p95": 291,
+    "p99": 817,
+    "throughput": "76.7",
+    "labels": {
+      "Homepage": 869,
+      "Product Page": 867,
+      "Add to Cart": 865,
+      "Add to Cart-0": 865,
+      "Add to Cart-1": 865,
+      "Cart Page": 865,
+      "Checkout": 864
+    },
+    "label_stats": {
+      "Homepage": {
+        "avg": 178,
+        "success": 869,
+        "error": 0,
+        "count": 869
+      },
+      "Product Page": {
+        "avg": 166,
+        "success": 867,
+        "error": 0,
+        "count": 867
+      },
+      "Add to Cart": {
+        "avg": 229,
+        "success": 865,
+        "error": 0,
+        "count": 865
+      },
+      "Add to Cart-0": {
+        "avg": 83,
+        "success": 865,
+        "error": 0,
+        "count": 865
+      },
+      "Add to Cart-1": {
+        "avg": 146,
+        "success": 865,
+        "error": 0,
+        "count": 865
+      },
+      "Cart Page": {
+        "avg": 149,
+        "success": 865,
+        "error": 0,
+        "count": 865
+      },
+      "Checkout": {
+        "avg": 161,
+        "success": 864,
+        "error": 0,
+        "count": 864
+      }
+    }
+  },
+  "cpu-stress-productcatalog-50u": {
+    "total": 9893,
+    "success": 9893,
+    "errors": 0,
+    "error_rate": "0.00%",
+    "avg_rt": 492,
+    "min_rt": 12,
+    "max_rt": 3058,
+    "p50": 509,
+    "p90": 722,
+    "p95": 800,
+    "p99": 918,
+    "throughput": "118.7",
+    "labels": {
+      "Homepage": 1429,
+      "Product Page": 1425,
+      "Add to Cart": 1414,
+      "Add to Cart-0": 1414,
+      "Add to Cart-1": 1414,
+      "Cart Page": 1403,
+      "Checkout": 1394
+    },
+    "label_stats": {
+      "Homepage": {
+        "avg": 620,
+        "success": 1429,
+        "error": 0,
+        "count": 1429
+      },
+      "Product Page": {
+        "avg": 496,
+        "success": 1425,
+        "error": 0,
+        "count": 1425
+      },
+      "Add to Cart": {
+        "avg": 664,
+        "success": 1414,
+        "error": 0,
+        "count": 1414
+      },
+      "Add to Cart-0": {
+        "avg": 134,
+        "success": 1414,
+        "error": 0,
+        "count": 1414
+      },
+      "Add to Cart-1": {
+        "avg": 529,
+        "success": 1414,
+        "error": 0,
+        "count": 1414
+      },
+      "Cart Page": {
+        "avg": 526,
+        "success": 1403,
+        "error": 0,
+        "count": 1403
+      },
+      "Checkout": {
+        "avg": 472,
+        "success": 1394,
+        "error": 0,
+        "count": 1394
+      }
+    }
+  },
+  "cpu-stress-productcatalog-100u": {
+    "total": 11953,
+    "success": 11953,
+    "errors": 0,
+    "error_rate": "0.00%",
+    "avg_rt": 873,
+    "min_rt": 12,
+    "max_rt": 5483,
+    "p50": 962,
+    "p90": 1301,
+    "p95": 1403,
+    "p99": 1609,
+    "throughput": "128.1",
+    "labels": {
+      "Homepage": 1758,
+      "Product Page": 1736,
+      "Add to Cart": 1703,
+      "Add to Cart-0": 1703,
+      "Add to Cart-1": 1703,
+      "Cart Page": 1686,
+      "Checkout": 1664
+    },
+    "label_stats": {
+      "Homepage": {
+        "avg": 935,
+        "success": 1758,
+        "error": 0,
+        "count": 1758
+      },
+      "Product Page": {
+        "avg": 925,
+        "success": 1736,
+        "error": 0,
+        "count": 1736
+      },
+      "Add to Cart": {
+        "avg": 1207,
+        "success": 1703,
+        "error": 0,
+        "count": 1703
+      },
+      "Add to Cart-0": {
+        "avg": 229,
+        "success": 1703,
+        "error": 0,
+        "count": 1703
+      },
+      "Add to Cart-1": {
+        "avg": 977,
+        "success": 1703,
+        "error": 0,
+        "count": 1703
+      },
+      "Cart Page": {
+        "avg": 977,
+        "success": 1686,
+        "error": 0,
+        "count": 1686
+      },
+      "Checkout": {
+        "avg": 859,
+        "success": 1664,
+        "error": 0,
+        "count": 1664
+      }
+    }
+  },
+  "memory-stress-currency-10u": {
+    "total": 6381,
+    "success": 6381,
+    "errors": 0,
+    "error_rate": "0.00%",
+    "avg_rt": 150,
+    "min_rt": 11,
+    "max_rt": 1076,
+    "p50": 121,
+    "p90": 213,
+    "p95": 271,
+    "p99": 622,
+    "throughput": "80.9",
+    "labels": {
+      "Homepage": 916,
+      "Product Page": 916,
+      "Add to Cart": 912,
+      "Add to Cart-0": 912,
+      "Add to Cart-1": 912,
+      "Cart Page": 907,
+      "Checkout": 906
+    },
+    "label_stats": {
+      "Homepage": {
+        "avg": 165,
+        "success": 916,
+        "error": 0,
+        "count": 916
+      },
+      "Product Page": {
+        "avg": 159,
+        "success": 916,
+        "error": 0,
+        "count": 916
+      },
+      "Add to Cart": {
+        "avg": 212,
+        "success": 912,
+        "error": 0,
+        "count": 912
+      },
+      "Add to Cart-0": {
+        "avg": 77,
+        "success": 912,
+        "error": 0,
+        "count": 912
+      },
+      "Add to Cart-1": {
+        "avg": 134,
+        "success": 912,
+        "error": 0,
+        "count": 912
+      },
+      "Cart Page": {
+        "avg": 149,
+        "success": 907,
+        "error": 0,
+        "count": 907
+      },
+      "Checkout": {
+        "avg": 152,
+        "success": 906,
+        "error": 0,
+        "count": 906
+      }
+    }
+  },
+  "memory-stress-currency-50u": {
+    "total": 8734,
+    "success": 8734,
+    "errors": 0,
+    "error_rate": "0.00%",
+    "avg_rt": 565,
+    "min_rt": 12,
+    "max_rt": 4962,
+    "p50": 526,
+    "p90": 883,
+    "p95": 1104,
+    "p99": 1953,
+    "throughput": "105.1",
+    "labels": {
+      "Homepage": 1266,
+      "Product Page": 1258,
+      "Add to Cart": 1251,
+      "Add to Cart-0": 1251,
+      "Add to Cart-1": 1251,
+      "Cart Page": 1234,
+      "Checkout": 1223
+    },
+    "label_stats": {
+      "Homepage": {
+        "avg": 658,
+        "success": 1266,
+        "error": 0,
+        "count": 1266
+      },
+      "Product Page": {
+        "avg": 583,
+        "success": 1258,
+        "error": 0,
+        "count": 1258
+      },
+      "Add to Cart": {
+        "avg": 808,
+        "success": 1251,
+        "error": 0,
+        "count": 1251
+      },
+      "Add to Cart-0": {
+        "avg": 246,
+        "success": 1251,
+        "error": 0,
+        "count": 1251
+      },
+      "Add to Cart-1": {
+        "avg": 561,
+        "success": 1251,
+        "error": 0,
+        "count": 1251
+      },
+      "Cart Page": {
+        "avg": 557,
+        "success": 1234,
+        "error": 0,
+        "count": 1234
+      },
+      "Checkout": {
+        "avg": 540,
+        "success": 1223,
+        "error": 0,
+        "count": 1223
+      }
+    }
+  },
+  "memory-stress-currency-100u": {
+    "total": 11711,
+    "success": 11711,
+    "errors": 0,
+    "error_rate": "0.00%",
+    "avg_rt": 896,
+    "min_rt": 11,
+    "max_rt": 5987,
+    "p50": 926,
+    "p90": 1412,
+    "p95": 1604,
+    "p99": 2119,
+    "throughput": "125.4",
+    "labels": {
+      "Homepage": 1712,
+      "Product Page": 1695,
+      "Add to Cart": 1676,
+      "Add to Cart-0": 1675,
+      "Add to Cart-1": 1675,
+      "Cart Page": 1645,
+      "Checkout": 1633
+    },
+    "label_stats": {
+      "Homepage": {
+        "avg": 951,
+        "success": 1712,
+        "error": 0,
+        "count": 1712
+      },
+      "Product Page": {
+        "avg": 940,
+        "success": 1695,
+        "error": 0,
+        "count": 1695
+      },
+      "Add to Cart": {
+        "avg": 1262,
+        "success": 1676,
+        "error": 0,
+        "count": 1676
+      },
+      "Add to Cart-0": {
+        "avg": 294,
+        "success": 1675,
+        "error": 0,
+        "count": 1675
+      },
+      "Add to Cart-1": {
+        "avg": 968,
+        "success": 1675,
+        "error": 0,
+        "count": 1675
+      },
+      "Cart Page": {
+        "avg": 988,
+        "success": 1645,
+        "error": 0,
+        "count": 1645
+      },
+      "Checkout": {
+        "avg": 866,
+        "success": 1633,
+        "error": 0,
+        "count": 1633
+      }
+    }
+  }
+}

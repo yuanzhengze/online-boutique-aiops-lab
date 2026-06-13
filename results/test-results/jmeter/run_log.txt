@@ -1,0 +1,441 @@
+============================================================
+Starting JMeter + ChaosMesh tests
+Duration: 60s, Users: [10, 50, 100]
+Scenarios: 6
+============================================================
+SSH connected
+  Cleanup chaos...
+  Cleanup: No resources found
+
+============================================================
+SCENARIO: baseline
+============================================================
+  JMeter baseline-10u: starting (60s, rampup=5s)...
+  ... running (5s/80s)
+  ... running (10s/80s)
+  ... running (15s/80s)
+  ... running (20s/80s)
+  ... running (25s/80s)
+  ... running (30s/80s)
+  ... running (35s/80s)
+  ... running (40s/80s)
+  ... running (45s/80s)
+  ... running (50s/80s)
+  ... running (55s/80s)
+  ... running (60s/80s)
+  ... running (65s/80s)
+  ... running (70s/80s)
+  ... running (75s/80s)
+  80s elapsed, killing JMeter...
+  baseline-10u: 6053 samples OK
+  JMeter baseline-50u: starting (60s, rampup=10s)...
+  ... running (5s/85s)
+  ... running (10s/85s)
+  ... running (15s/85s)
+  ... running (20s/85s)
+  ... running (25s/85s)
+  ... running (30s/85s)
+  ... running (35s/85s)
+  ... running (40s/85s)
+  ... running (45s/85s)
+  ... running (50s/85s)
+  ... running (55s/85s)
+  ... running (60s/85s)
+  ... running (65s/85s)
+  ... running (70s/85s)
+  ... running (75s/85s)
+  ... running (80s/85s)
+  85s elapsed, killing JMeter...
+  baseline-50u: 9509 samples OK
+  JMeter baseline-100u: starting (60s, rampup=20s)...
+  ... running (5s/95s)
+  ... running (10s/95s)
+  ... running (15s/95s)
+  ... running (20s/95s)
+  ... running (25s/95s)
+  ... running (30s/95s)
+  ... running (35s/95s)
+  ... running (40s/95s)
+  ... running (45s/95s)
+  ... running (50s/95s)
+  ... running (55s/95s)
+  ... running (60s/95s)
+  ... running (65s/95s)
+  ... running (70s/95s)
+  ... running (75s/95s)
+  ... running (80s/95s)
+  ... running (85s/95s)
+  ... running (90s/95s)
+  95s elapsed, killing JMeter...
+  baseline-100u: 11392 samples OK
+
+============================================================
+SCENARIO: pod-kill-cartservice
+============================================================
+  Inject pod-kill-cartservice.yaml: podchaos.chaos-mesh.org/pod-kill-cartservice created
+  Waiting 5s...
+  JMeter pod-kill-cartservice-10u: starting (60s, rampup=5s)...
+  ... running (5s/80s)
+  ... running (10s/80s)
+  ... running (15s/80s)
+  ... running (20s/80s)
+  ... running (25s/80s)
+  ... running (30s/80s)
+  ... running (35s/80s)
+  ... running (40s/80s)
+  ... running (45s/80s)
+  ... running (50s/80s)
+  ... running (55s/80s)
+  ... running (60s/80s)
+  ... running (65s/80s)
+  ... running (70s/80s)
+  ... running (75s/80s)
+  80s elapsed, killing JMeter...
+  pod-kill-cartservice-10u: 31945 samples OK
+  JMeter pod-kill-cartservice-50u: starting (60s, rampup=10s)...
+  ... running (5s/85s)
+  ... running (10s/85s)
+  ... running (15s/85s)
+  ... running (20s/85s)
+  ... running (25s/85s)
+  ... running (30s/85s)
+  ... running (35s/85s)
+  ... running (40s/85s)
+  ... running (45s/85s)
+  ... running (50s/85s)
+  ... running (55s/85s)
+  ... running (60s/85s)
+  ... running (65s/85s)
+  ... running (70s/85s)
+  ... running (75s/85s)
+  ... running (80s/85s)
+  85s elapsed, killing JMeter...
+  pod-kill-cartservice-50u: 10019 samples OK
+  JMeter pod-kill-cartservice-100u: starting (60s, rampup=20s)...
+  ... running (5s/95s)
+  ... running (10s/95s)
+  ... running (15s/95s)
+  ... running (20s/95s)
+  ... running (25s/95s)
+  ... running (30s/95s)
+  ... running (35s/95s)
+  ... running (40s/95s)
+  ... running (45s/95s)
+  ... running (50s/95s)
+  ... running (55s/95s)
+  ... running (60s/95s)
+  ... running (65s/95s)
+  ... running (70s/95s)
+  ... running (75s/95s)
+  ... running (80s/95s)
+  ... running (85s/95s)
+  ... running (90s/95s)
+  95s elapsed, killing JMeter...
+  pod-kill-cartservice-100u: 11447 samples OK
+  Remove pod-kill-cartservice.yaml: podchaos.chaos-mesh.org "pod-kill-cartservice" deleted
+  Waiting 30s for recovery...
+  Cleanup chaos...
+  Cleanup: No resources found
+
+============================================================
+SCENARIO: network-delay-recommendation
+============================================================
+  Inject network-delay-recommendation.yaml: networkchaos.chaos-mesh.org/network-delay-recommendation created
+  Waiting 10s...
+  JMeter network-delay-recommendation-10u: starting (60s, rampup=5s)...
+  ... running (5s/80s)
+  ... running (10s/80s)
+  ... running (15s/80s)
+  ... running (20s/80s)
+  ... running (25s/80s)
+  ... running (30s/80s)
+  ... running (35s/80s)
+  ... running (40s/80s)
+  ... running (45s/80s)
+  ... running (50s/80s)
+  ... running (55s/80s)
+  ... running (60s/80s)
+  ... running (65s/80s)
+  ... running (70s/80s)
+  ... running (75s/80s)
+  80s elapsed, killing JMeter...
+  network-delay-recommendation-10u: 5925 samples OK
+  JMeter network-delay-recommendation-50u: starting (60s, rampup=10s)...
+  ... running (5s/85s)
+  ... running (10s/85s)
+  ... running (15s/85s)
+  ... running (20s/85s)
+  ... running (25s/85s)
+  ... running (30s/85s)
+  ... running (35s/85s)
+  ... running (40s/85s)
+  ... running (45s/85s)
+  ... running (50s/85s)
+  ... running (55s/85s)
+  ... running (60s/85s)
+  ... running (65s/85s)
+  ... running (70s/85s)
+  ... running (75s/85s)
+  ... running (80s/85s)
+  85s elapsed, killing JMeter...
+  network-delay-recommendation-50u: 8676 samples OK
+  JMeter network-delay-recommendation-100u: starting (60s, rampup=20s)...
+  ... running (5s/95s)
+  ... running (10s/95s)
+  ... running (15s/95s)
+  ... running (20s/95s)
+  ... running (25s/95s)
+  ... running (30s/95s)
+  ... running (35s/95s)
+  ... running (40s/95s)
+  ... running (45s/95s)
+  ... running (50s/95s)
+  ... running (55s/95s)
+  ... running (60s/95s)
+  ... running (65s/95s)
+  ... running (70s/95s)
+  ... running (75s/95s)
+  ... running (80s/95s)
+  ... running (85s/95s)
+  ... running (90s/95s)
+  95s elapsed, killing JMeter...
+  network-delay-recommendation-100u: 10560 samples OK
+  Remove network-delay-recommendation.yaml: networkchaos.chaos-mesh.org "network-delay-recommendation" deleted
+error: timed out waiting for the condition on networkchaos/network-delay-recommendation
+  Waiting 30s for recovery...
+  Cleanup chaos...
+  Cleanup: networkchaos.chaos-mesh.org "network-delay-recommendation" deleted
+error: timed out waiting for the condition on networkchaos/network-delay-recommendation
+
+============================================================
+SCENARIO: network-loss-frontend
+============================================================
+  Inject network-loss-frontend.yaml: networkchaos.chaos-mesh.org/network-loss-frontend created
+  Waiting 10s...
+  JMeter network-loss-frontend-10u: starting (60s, rampup=5s)...
+  ... running (5s/80s)
+  ... running (10s/80s)
+  ... running (15s/80s)
+  ... running (20s/80s)
+  ... running (25s/80s)
+  ... running (30s/80s)
+  ... running (35s/80s)
+  ... running (40s/80s)
+  ... running (45s/80s)
+  ... running (50s/80s)
+  ... running (55s/80s)
+  ... running (60s/80s)
+  ... running (65s/80s)
+  ... running (70s/80s)
+  ... running (75s/80s)
+  80s elapsed, killing JMeter...
+  network-loss-frontend-10u: 6253 samples OK
+  JMeter network-loss-frontend-50u: starting (60s, rampup=10s)...
+  ... running (5s/85s)
+  ... running (10s/85s)
+  ... running (15s/85s)
+  ... running (20s/85s)
+  ... running (25s/85s)
+  ... running (30s/85s)
+  ... running (35s/85s)
+  ... running (40s/85s)
+  ... running (45s/85s)
+  ... running (50s/85s)
+  ... running (55s/85s)
+  ... running (60s/85s)
+  ... running (65s/85s)
+  ... running (70s/85s)
+  ... running (75s/85s)
+  ... running (80s/85s)
+  85s elapsed, killing JMeter...
+  network-loss-frontend-50u: 9570 samples OK
+  JMeter network-loss-frontend-100u: starting (60s, rampup=20s)...
+  ... running (5s/95s)
+  ... running (10s/95s)
+  ... running (15s/95s)
+  ... running (20s/95s)
+  ... running (25s/95s)
+  ... running (30s/95s)
+  ... running (35s/95s)
+  ... running (40s/95s)
+  ... running (45s/95s)
+  ... running (50s/95s)
+  ... running (55s/95s)
+  ... running (60s/95s)
+  ... running (65s/95s)
+  ... running (70s/95s)
+  ... running (75s/95s)
+  ... running (80s/95s)
+  ... running (85s/95s)
+  ... running (90s/95s)
+  95s elapsed, killing JMeter...
+  network-loss-frontend-100u: 11703 samples OK
+  Remove network-loss-frontend.yaml: networkchaos.chaos-mesh.org "network-loss-frontend" deleted
+error: timed out waiting for the condition on networkchaos/network-loss-frontend
+  Waiting 30s for recovery...
+  Cleanup chaos...
+  Cleanup: networkchaos.chaos-mesh.org "network-delay-recommendation" deleted
+networkchaos.chaos-mesh.org "network-loss-frontend" deleted
+error: timed out waiting for the condition on networkchaos/network-delay-recommendation
+
+============================================================
+SCENARIO: cpu-stress-productcatalog
+============================================================
+  Inject cpu-stress-productcatalog.yaml: stresschaos.chaos-mesh.org/cpu-stress-productcatalog created
+  Waiting 10s...
+  JMeter cpu-stress-productcatalog-10u: starting (60s, rampup=5s)...
+  ... running (5s/80s)
+  ... running (10s/80s)
+  ... running (15s/80s)
+  ... running (20s/80s)
+  ... running (25s/80s)
+  ... running (30s/80s)
+  ... running (35s/80s)
+  ... running (40s/80s)
+  ... running (45s/80s)
+  ... running (50s/80s)
+  ... running (55s/80s)
+  ... running (60s/80s)
+  ... running (65s/80s)
+  ... running (70s/80s)
+  ... running (75s/80s)
+  80s elapsed, killing JMeter...
+  cpu-stress-productcatalog-10u: 6061 samples OK
+  JMeter cpu-stress-productcatalog-50u: starting (60s, rampup=10s)...
+  ... running (5s/85s)
+  ... running (10s/85s)
+  ... running (15s/85s)
+  ... running (20s/85s)
+  ... running (25s/85s)
+  ... running (30s/85s)
+  ... running (35s/85s)
+  ... running (40s/85s)
+  ... running (45s/85s)
+  ... running (50s/85s)
+  ... running (55s/85s)
+  ... running (60s/85s)
+  ... running (65s/85s)
+  ... running (70s/85s)
+  ... running (75s/85s)
+  ... running (80s/85s)
+  85s elapsed, killing JMeter...
+  cpu-stress-productcatalog-50u: 9894 samples OK
+  JMeter cpu-stress-productcatalog-100u: starting (60s, rampup=20s)...
+  ... running (5s/95s)
+  ... running (10s/95s)
+  ... running (15s/95s)
+  ... running (20s/95s)
+  ... running (25s/95s)
+  ... running (30s/95s)
+  ... running (35s/95s)
+  ... running (40s/95s)
+  ... running (45s/95s)
+  ... running (50s/95s)
+  ... running (55s/95s)
+  ... running (60s/95s)
+  ... running (65s/95s)
+  ... running (70s/95s)
+  ... running (75s/95s)
+  ... running (80s/95s)
+  ... running (85s/95s)
+  ... running (90s/95s)
+  95s elapsed, killing JMeter...
+  cpu-stress-productcatalog-100u: 11954 samples OK
+  Remove cpu-stress-productcatalog.yaml: stresschaos.chaos-mesh.org "cpu-stress-productcatalog" deleted
+  Waiting 30s for recovery...
+  Cleanup chaos...
+  Cleanup: networkchaos.chaos-mesh.org "network-delay-recommendation" deleted
+networkchaos.chaos-mesh.org "network-loss-frontend" deleted
+error: timed out waiting for the condition on networkchaos/network-delay-recommendation
+
+============================================================
+SCENARIO: memory-stress-currency
+============================================================
+  Inject memory-stress-currency.yaml: stresschaos.chaos-mesh.org/memory-stress-currency created
+  Waiting 10s...
+  JMeter memory-stress-currency-10u: starting (60s, rampup=5s)...
+  ... running (5s/80s)
+  ... running (10s/80s)
+  ... running (15s/80s)
+  ... running (20s/80s)
+  ... running (25s/80s)
+  ... running (30s/80s)
+  ... running (35s/80s)
+  ... running (40s/80s)
+  ... running (45s/80s)
+  ... running (50s/80s)
+  ... running (55s/80s)
+  ... running (60s/80s)
+  ... running (65s/80s)
+  ... running (70s/80s)
+  ... running (75s/80s)
+  80s elapsed, killing JMeter...
+  memory-stress-currency-10u: 6382 samples OK
+  JMeter memory-stress-currency-50u: starting (60s, rampup=10s)...
+  ... running (5s/85s)
+  ... running (10s/85s)
+  ... running (15s/85s)
+  ... running (20s/85s)
+  ... running (25s/85s)
+  ... running (30s/85s)
+  ... running (35s/85s)
+  ... running (40s/85s)
+  ... running (45s/85s)
+  ... running (50s/85s)
+  ... running (55s/85s)
+  ... running (60s/85s)
+  ... running (65s/85s)
+  ... running (70s/85s)
+  ... running (75s/85s)
+  ... running (80s/85s)
+  85s elapsed, killing JMeter...
+  memory-stress-currency-50u: 8735 samples OK
+  JMeter memory-stress-currency-100u: starting (60s, rampup=20s)...
+  ... running (5s/95s)
+  ... running (10s/95s)
+  ... running (15s/95s)
+  ... running (20s/95s)
+  ... running (25s/95s)
+  ... running (30s/95s)
+  ... running (35s/95s)
+  ... running (40s/95s)
+  ... running (45s/95s)
+  ... running (50s/95s)
+  ... running (55s/95s)
+  ... running (60s/95s)
+  ... running (65s/95s)
+  ... running (70s/95s)
+  ... running (75s/95s)
+  ... running (80s/95s)
+  ... running (85s/95s)
+  ... running (90s/95s)
+  95s elapsed, killing JMeter...
+  memory-stress-currency-100u: 11712 samples OK
+  Remove memory-stress-currency.yaml: stresschaos.chaos-mesh.org "memory-stress-currency" deleted
+  Waiting 30s for recovery...
+  Cleanup chaos...
+  Cleanup: networkchaos.chaos-mesh.org "network-delay-recommendation" deleted
+networkchaos.chaos-mesh.org "network-loss-frontend" deleted
+error: timed out waiting for the condition on networkchaos/network-delay-recommendation
+
+============================================================
+ALL TESTS COMPLETED!
+============================================================
+  baseline-10u: OK
+  baseline-50u: OK
+  baseline-100u: OK
+  pod-kill-cartservice-10u: OK
+  pod-kill-cartservice-50u: OK
+  pod-kill-cartservice-100u: OK
+  network-delay-recommendation-10u: OK
+  network-delay-recommendation-50u: OK
+  network-delay-recommendation-100u: OK
+  network-loss-frontend-10u: OK
+  network-loss-frontend-50u: OK
+  network-loss-frontend-100u: OK
+  cpu-stress-productcatalog-10u: OK
+  cpu-stress-productcatalog-50u: OK
+  cpu-stress-productcatalog-100u: OK
+  memory-stress-currency-10u: OK
+  memory-stress-currency-50u: OK
+  memory-stress-currency-100u: OK

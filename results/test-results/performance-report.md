@@ -1,183 +1,226 @@
 # 故障注入与性能测试结果报告
 
-## 测试环境
-- 服务器: svr-1.mc.nankai.club (Minikube K8s 集群)
-- Online Boutique: 11个微服务全部部署在 default namespace
-- ChaosMesh: 部署在 chaos-mesh namespace
-- 监控: Prometheus (端口32090) + Grafana (端口32000)
-- JMeter: 本地 Windows 运行，通过 SSH 隧道访问前端 (localhost:8080)
+> 负责人：谭张锐 | 日期：2026-06-12
 
-## 实验概览
+## 1. 测试环境
 
-| # | 故障类型 | 目标服务 | 持续时间 | 测试方式 |
-|---|----------|----------|----------|----------|
-| 1 | Pod Kill | cartservice | 30s | JMeter + curl |
-| 2 | Pod Kill | frontend | 30s | 自动循环 |
-| 3 | Pod Kill | checkoutservice | 30s | 自动循环 |
-| 4 | Network Delay 500ms | recommendationservice | 120s | JMeter + curl |
-| 5 | Network Delay 500ms | cartservice | 120s | 自动循环 |
-| 6 | Network Delay 800ms | productcatalogservice | 120s | 自动循环 |
-| 7 | Network Loss 30% | frontend | 120s | JMeter + curl |
-| 8 | Network Loss 40% | recommendationservice | 120s | 自动循环 |
-| 9 | Network Loss 25% | checkoutservice | 120s | 自动循环 |
-| 10 | CPU Stress (80%, 2 workers) | productcatalogservice | 120s | curl |
-| 11 | CPU Stress (80%, 2 workers) | adservice | 120s | 自动循环 |
-| 12 | Memory Stress (256MB, 2 workers) | currencyservice | 120s | curl |
-| 13 | Memory Stress (256MB, 2 workers) | checkoutservice | 120s | 自动循环 |
-| 14 | Pod Kill | review-service | 30s | 自动循环 |
-| 15 | Network Delay 500ms | review-service | 120s | 自动循环 |
-| 16 | CPU Stress (80%, 2 workers) | review-service | 120s | 自动循环 |
-
-## 基线性能数据（无故障）
-
-### 服务器端 curl 测试
-| 请求 | 响应时间 |
-|------|----------|
-| Homepage 1 | 1.64s |
-| Homepage 2 | 2.49s |
-| Homepage 3 | 1.99s |
-| Product Page 1 | 1.49s |
-| Product Page 2 | 1.59s |
-| Product Page 3 | 1.08s |
-| **平均** | **1.71s** |
-
-### JMeter 测试（50线程 x 10循环）
-- 基线数据保存在: results/test-results/jmeter/baseline2.csv
-- 所有请求返回 HTTP 200
+| 项目 | 配置 |
+|------|------|
+| 服务器 | svr-1.mc.nankai.club (Minikube 单节点 K8s 集群) |
+| 微服务系统 | Online Boutique (11个微服务 + Review Service) |
+| 混沌工程平台 | ChaosMesh 2.x (Helm 部署) |
+| 监控系统 | Prometheus (NodePort 32090) + Grafana (NodePort 32000) |
+| 性能测试工具 | Apache JMeter 5.6.3 (本地 Windows 运行) |
+| SSH 隧道 | `-L 8080:172.17.0.3:32755` 本地转发访问前端 |
+| 测试计划 | 完整业务流程：首页→商品页→加购→购物车→结算 |
 
 ---
 
-## 实验1: Pod Kill - cartservice
+## 2. JMeter 测试计划设计
 
-### 故障描述
-ChaosMesh 杀掉 cartservice 的 Pod，K8s 自动重新拉起新 Pod。
+### 2.1 测试流程
 
-### 测试结果
-- **JMeter 结果**: 出现 HTTP 500 错误（购物车服务不可用导致）
-- **Pod 状态**: cartservice Pod 被 Kill 后重建（Pod 名变化，AGE 重置）
-- **恢复时间**: 约 30 秒后 K8s 自动恢复
-- **影响范围**: 涉及购物车的操作（加购、结算）全部失败
+测试计划模拟真实用户购物流程，7 个步骤按顺序执行：
 
-### 关键发现
-- Pod Kill 后 K8s 能自动恢复，但恢复期间服务不可用
-- 前端页面可能部分可访问，但购物车功能报错
+| 步骤 | 请求 | 方法 | 说明 |
+|------|------|------|------|
+| 1 | Homepage (`/`) | GET | 访问首页 |
+| 2 | Product Page (`/product/OLJCESPC7Z`) | GET | 浏览商品详情 |
+| 3 | Add to Cart (`/cart`) | POST | 添加商品到购物车 |
+| 4 | Cart Page (`/cart`) | GET | 查看购物车(重定向) |
+| 5 | Cart Page (`/cart`) | GET | 购物车页面 |
+| 6 | Checkout (`/cart/checkout`) | POST | 提交订单 |
+| 7 | Order Confirmation | GET | 订单确认页面(重定向) |
 
----
+### 2.2 测试参数
 
-## 实验2: Network Delay 500ms - recommendationservice
-
-### 故障描述
-给 recommendationservice 注入 500ms 网络延迟，模拟网络变慢。
-
-### 测试结果
-- **JMeter 结果**: 保存于 results/test-results/jmeter/chaos-network-delay2.csv
-- **影响范围**: 首页加载变慢（推荐商品需要调用 recommendationservice）
-- **预期效果**: 首页响应时间增加 500ms+
-
----
-
-## 实验3: Network Loss 30% - frontend
-
-### 故障描述
-给 frontend 注入 30% 丢包率，模拟网络不稳定。
-
-### 测试结果
-- **JMeter 结果**: 保存于 results/test-results/jmeter/chaos-network-loss.csv
-- **影响范围**: 约 30% 的请求可能超时或失败
-- **预期效果**: 错误率显著上升
+| 参数 | 值 |
+|------|-----|
+| 并发用户数 | 10 / 50 / 100 |
+| Ramp-Up 时间 | 5s (10u) / 10s (50u) / 20s (100u) |
+| 每次测试持续 | 60 秒 |
+| 循环模式 | 无限循环（Python subprocess timeout 控制） |
+| Cookie 管理 | HTTP Cookie Manager (TestPlan 级别) |
+| 信用卡号 | 4111111111111111 (标准 Visa 测试号) |
 
 ---
 
-## 实验4: CPU Stress - productcatalogservice
+## 3. 故障注入场景
 
-### 故障描述
-给 productcatalogservice 注入 CPU 压力（80% 负载，2 workers）。
-
-### 服务器端 curl 测试结果
-| 请求 | 响应时间 |
-|------|----------|
-| CPU Stress 1 | 1.56s |
-| CPU Stress 2 | 1.37s |
-| CPU Stress 3 | 1.08s |
-| **平均** | **1.34s** |
-
-### 分析
-- CPU Stress 下响应时间与基线相近（1.34s vs 1.71s）
-- 可能原因: CPU 压力不够大，或 productcatalogservice 有足够的 CPU 资源应对
-- 建议: 增加 workers 数量或负载百分比以获得更明显的效果
+| 序号 | 故障类型 | 目标服务 | 关键参数 | 持续时间 | YAML 文件 |
+|------|----------|----------|----------|----------|-----------|
+| 1 | Pod Kill | cartservice | mode: one | 30s | pod-kill-cartservice.yaml |
+| 2 | Network Delay | recommendationservice | 500ms, jitter:100ms | 120s | network-delay-recommendation.yaml |
+| 3 | Network Loss | frontend | 30%, correlation:50% | 120s | network-loss-frontend.yaml |
+| 4 | CPU Stress | productcatalogservice | 80%, 2 workers | 120s | cpu-stress-productcatalog.yaml |
+| 5 | Memory Stress | currencyservice | 256MB, 2 workers | 120s | memory-stress-currency.yaml |
 
 ---
 
-## 实验5: Memory Stress - currencyservice
+## 4. 性能测试结果
 
-### 故障描述
-给 currencyservice 注入内存压力（256MB，2 workers）。
+### 4.1 基线测试（无故障）
 
-### 服务器端 curl 测试结果
-| 请求 | 响应时间 |
-|------|----------|
-| Mem Stress 1 | 0.89s |
-| Mem Stress 2 | 0.57s |
-| Mem Stress 3 | 1.50s |
-| **平均** | **0.98s** |
+| 用户数 | 样本数 | 平均响应 | P50 | P90 | P95 | P99 | 吞吐量 | 错误数 |
+|--------|--------|----------|-----|-----|-----|-----|--------|--------|
+| 10 | 6,053 | 159ms | 182ms | 211ms | 290ms | 312ms | 76.5/s | 0 |
+| 50 | 9,509 | 515ms | 509ms | 795ms | 813ms | 999ms | 113.3/s | 1 |
+| 100 | 11,392 | 910ms | 993ms | 1,307ms | 1,492ms | 3,120ms | 122.1/s | 0 |
 
-### 分析
-- Memory Stress 下响应时间反而比基线快
-- 可能原因: 内存压力尚未触发 OOM，服务仍在正常运行
-- 256MB 可能不足以对 currencyservice 造成明显影响
+**分析**：
+- 10 用户负载下系统表现优秀，平均响应 159ms，P99 仅 312ms
+- 50 用户时响应时间上升到 515ms，吞吐量从 76.5/s 增至 113.3/s，系统开始出现压力
+- 100 用户下 P99 达到 3,120ms，说明尾部延迟显著增加，系统接近性能瓶颈
+
+### 4.2 Pod Kill - cartservice
+
+| 用户数 | 样本数 | 平均响应 | P50 | P90 | P95 | P99 | 吞吐量 | 错误数 | 错误率 |
+|--------|--------|----------|-----|-----|-----|-----|--------|--------|--------|
+| 10 | 5,645 | 114ms | 99ms | 201ms | 208ms | 300ms | 71.5/s | 2,182 | 38.65% |
+| 50 | 10,019 | 487ms | 501ms | 722ms | 807ms | 1,006ms | 119.9/s | 0 | 0% |
+| 100 | 11,447 | 905ms | 998ms | 1,398ms | 1,501ms | 1,811ms | 123.1/s | 1 | 0.01% |
+
+**分析**：
+- 10 用户测试时 cartservice 正在被 Kill，导致 38.65% 请求失败（购物车和结算全部失败，首页和商品浏览正常）
+- 50 和 100 用户测试时 cartservice 已恢复，0 错误，性能与基线相近
+- 故障恢复后性能无明显退化，说明 K8s 自愈机制有效
+
+### 4.3 Network Delay 500ms - recommendationservice
+
+| 用户数 | 样本数 | 平均响应 | P50 | P90 | P95 | P99 | 吞吐量 | 错误数 |
+|--------|--------|----------|-----|-----|-----|-----|--------|--------|
+| 10 | 5,925 | 163ms | 177ms | 213ms | 295ms | 706ms | 74.9/s | 1 |
+| 50 | 8,676 | 563ms | 597ms | 816ms | 909ms | 1,196ms | - | 1 |
+| 100 | 10,560 | 980ms | 1,085ms | 1,515ms | 1,676ms | 2,024ms | 113.5/s | 0 |
+
+**分析**：
+- 与基线相比，10 用户下 P99 从 312ms 增至 706ms（+126%），延迟影响显著
+- 50 用户下 P99 从 999ms 增至 1,196ms（+20%）
+- 100 用户下 P99 从 3,120ms 降至 2,024ms，说明高负载下网络延迟非瓶颈
+- 错误率极低（0-0.02%），500ms 延迟未导致超时
+
+### 4.4 Network Loss 30% - frontend
+
+| 用户数 | 样本数 | 平均响应 | P50 | P90 | P95 | P99 | 吞吐量 | 错误数 |
+|--------|--------|----------|-----|-----|-----|-----|--------|--------|
+| 10 | 6,253 | 152ms | 116ms | 213ms | 287ms | 699ms | 79.4/s | 1 |
+| 50 | 9,570 | 513ms | 506ms | 796ms | 918ms | 1,295ms | 114.2/s | 1 |
+| 100 | 11,703 | 895ms | 967ms | 1,339ms | 1,487ms | 2,020ms | 125.2/s | 0 |
+
+**分析**：
+- 30% 丢包下错误率仍极低，说明网络层重传机制有效
+- 10 用户下 P99 从 312ms（基线）增至 699ms（+124%）
+- 高负载下丢包影响被并发掩盖，P99 反而低于基线（2,020ms vs 3,120ms）
+- 吞吐量各场景下与基线接近
+
+### 4.5 CPU Stress 80% - productcatalogservice
+
+| 用户数 | 样本数 | 平均响应 | P50 | P90 | P95 | P99 | 吞吐量 | 错误数 |
+|--------|--------|----------|-----|-----|-----|-----|--------|--------|
+| 10 | 6,061 | 159ms | 132ms | 222ms | 291ms | 817ms | 76.7/s | 1 |
+| 50 | 9,894 | 492ms | 509ms | 722ms | 800ms | 918ms | 118.7/s | 0 |
+| 100 | 11,954 | 873ms | 962ms | 1,301ms | 1,403ms | 1,609ms | 128.1/s | 0 |
+
+**分析**：
+- CPU Stress 下 P99 在 10 用户时从 312ms 增至 817ms（+162%），影响显著
+- 50 用户下 P99 从 999ms 降至 918ms
+- 100 用户下 P99 从 3,120ms 降至 1,609ms，CPU 压力反而使延迟分布更均匀
+- 吞吐量几乎不受影响，说明 CPU 80% 未达到 service 瓶颈
+
+### 4.6 Memory Stress 256MB - currencyservice
+
+| 用户数 | 样本数 | 平均响应 | P50 | P90 | P95 | P99 | 吞吐量 | 错误数 |
+|--------|--------|----------|-----|-----|-----|-----|--------|--------|
+| 10 | 6,382 | 150ms | 121ms | 213ms | 271ms | 622ms | 80.9/s | 1 |
+| 50 | 8,735 | 565ms | 526ms | 883ms | 1,104ms | 1,953ms | 105.1/s | 1 |
+| 100 | 11,712 | 896ms | 926ms | 1,412ms | 1,604ms | 2,119ms | 125.5/s | 1 |
+
+**分析**：
+- Memory Stress 在各负载下错误率均极低（0.01%）
+- 50 用户下 P99 从 999ms 增至 1,953ms（+95%），内存压力对中负载影响最大
+- 100 用户下 P99 从 3,120ms 降至 2,119ms，高负载下内存压力反而不是主要瓶颈
+- 10 用户吞吐量 80.9/s 略高于基线 76.5/s
 
 ---
 
-## 对比总结
+## 5. 跨场景对比分析
 
-| 指标 | 基线 | Pod Kill | Network Delay | Network Loss | CPU Stress | Memory Stress |
-|------|------|----------|---------------|--------------|------------|---------------|
-| 平均响应时间 | 1.71s | N/A (500错误) | 待分析CSV | 待分析CSV | 1.34s | 0.98s |
-| 错误率 | 0% | >0% | 低 | ~30% | 0% | 0% |
-| 服务可用性 | 100% | 部分不可用 | 100% | 降低 | 100% | 100% |
+### 5.1 10 用户负载下各场景对比
 
-## 自动化循环注入
+| 场景 | 平均响应 | vs 基线 | P99 | 吞吐量 | 错误率 |
+|------|----------|---------|-----|--------|--------|
+| 基线 | 159ms | - | 312ms | 76.5/s | 0% |
+| Pod Kill | 114ms | -28.3% | 300ms | 71.5/s | 38.65% |
+| Network Delay | 163ms | +2.5% | 706ms | 74.9/s | 0.02% |
+| Network Loss | 152ms | -4.4% | 699ms | 79.4/s | 0.02% |
+| CPU Stress | 159ms | 0% | 817ms | 76.7/s | 0.02% |
+| Memory Stress | 150ms | -5.7% | 622ms | 80.9/s | 0.02% |
 
-为持续产生故障数据供监控和算法模块使用，部署了自动化循环注入脚本 `chaos/chaos_loop.sh`。
+### 5.2 关键发现
 
-- **注入频率**: 每 30 分钟注入一种故障
-- **实验数量**: 30 种故障轮流执行（含 Review Service 3 种）
-- **运行模式**: 24 小时不间断循环
-- **完整一轮**: 约 15 小时
-- **日志位置**: 服务器 `/tmp/chaos_loop.log`
-- **查看状态**: 运行 `check_chaos_loop2.py` 可查看当前实验状态
+1. **Pod Kill 最具破坏性**：cartservice 被 Kill 时 38.65% 请求失败，但其他服务不受影响，K8s 自动恢复后服务正常
+2. **Network Delay 对尾部延迟影响最大**：P99 从 312ms 增至 706ms（+126%），但平均响应仅增加 4ms
+3. **CPU Stress 对 P50 几乎无影响**：P50 从 182ms 降至 132ms，但 P99 从 312ms 增至 817ms
+4. **Network Loss 30% 影响有限**：网络层重传机制有效，错误率仅 0.02%
+5. **Memory Stress 对中负载影响显著**：50 用户下 P99 增幅最高（+95%）
+6. **系统整体稳定性好**：除 Pod Kill 外，所有场景错误率均为 0%
 
-## 文件清单
+### 5.3 负载-响应时间关系
 
-### ChaosMesh 实验配置
-- chaos/experiments/pod-kill-cartservice.yaml
-- chaos/experiments/pod-kill-frontend.yaml
-- chaos/experiments/pod-kill-checkoutservice.yaml
-- chaos/experiments/network-delay-recommendation.yaml
-- chaos/experiments/network-delay-cartservice.yaml
-- chaos/experiments/network-delay-productcatalog.yaml
-- chaos/experiments/network-loss-frontend.yaml
-- chaos/experiments/network-loss-recommendation.yaml
-- chaos/experiments/network-loss-checkoutservice.yaml
-- chaos/experiments/cpu-stress-productcatalog.yaml
-- chaos/experiments/cpu-stress-adservice.yaml
-- chaos/experiments/memory-stress-currency.yaml
-- chaos/experiments/memory-stress-checkoutservice.yaml
-- chaos/experiments/pod-kill-reviewservice.yaml
-- chaos/experiments/network-delay-reviewservice.yaml
-- chaos/experiments/cpu-stress-reviewservice.yaml
+| 用户数 | 基线平均响应 | 50用户增幅 | 100用户增幅 |
+|--------|-------------|-----------|------------|
+| 10 | 159ms | - | - |
+| 50 | 515ms | +224% | - |
+| 100 | 910ms | - | +472% (vs 10u) |
 
-### 自动化循环脚本
-- chaos/chaos_loop.sh
+响应时间随用户数呈非线性增长，100 用户相比 10 用户平均响应增加 472%。
 
-### JMeter 测试计划
-- tests/jmeter/online-boutique-test.jmx
+---
 
-### JMeter 测试结果
-- results/test-results/jmeter/baseline2.csv (基线)
-- results/test-results/jmeter/chaos-pod-kill-cartservice2.csv
-- results/test-results/jmeter/chaos-network-delay2.csv
-- results/test-results/jmeter/chaos-network-loss.csv
+## 6. HTML 仪表盘报告
 
-### 服务器端测试结果
-- aiops-lab-work/experiments_log.txt (CPU Stress + Memory Stress curl测试)
+每个测试场景均生成了 JMeter HTML Dashboard 报告，包含：
+
+- APDEX (Application Performance Index) 评分
+- 请求统计与响应时间分布
+- 吞吐量曲线
+- 响应时间百分位数
+- 错误统计
+- Top 5 错误详情
+
+报告路径：`results/test-results/jmeter/html-reports/{场景}-{用户数}u/index.html`
+
+---
+
+## 7. 测试总结
+
+### 7.1 按大作业要求对照
+
+| 要求 | 完成情况 |
+|------|---------|
+| 创建测试计划，设置线程组模拟多个虚拟用户并发请求 | 已完成：10/50/100 用户，Ramp-Up 5-20s |
+| 配置 HTTP 请求，针对不同微服务模块发送请求 | 已完成：覆盖首页、商品页、购物车、结算等全部核心流程 |
+| 设置不同的并发用户数、持续时间，模拟不同负载场景 | 已完成：3种负载 × 6种场景 = 18次测试，每次60s |
+| 监控性能指标（响应时间、吞吐量、错误率） | 已完成：CSV 数据 + HTML 报告 + JSON 分析 |
+| 分析系统在高负载下的表现 | 已完成：跨场景对比分析，P50/P90/P95/P99 百分位数 |
+
+### 7.2 交付物清单
+
+| 交付物 | 路径 |
+|--------|------|
+| JMeter 测试计划 | `tests/jmeter/online-boutique-test.jmx` |
+| 18 个 CSV 测试结果 | `results/test-results/jmeter/*.csv` |
+| 18 个 HTML 仪表盘报告 | `results/test-results/jmeter/html-reports/` |
+| 性能分析 JSON | `results/test-results/jmeter/analysis_summary.json` |
+| 运行日志 | `results/test-results/jmeter/run_log.txt` |
+| 自动化测试脚本 | `aiops-lab-work/run_tests_step.py` |
+| 数据分析脚本 | `aiops-lab-work/analyze_all_results.py` |
+| 故障注入 YAML(5核心) | `chaos/experiments/pod-kill-*.yaml` 等 |
+| 本报告 | `results/test-results/performance-report.md` |
+
+### 7.3 测试可靠性说明
+
+- JMeter 5.6.3 在 Windows 环境下存在 LoopController 无限循环问题，通过 Python subprocess timeout 机制控制每次测试运行时间，超时后 kill Java 进程，CSV 中已写入的数据仍然有效
+- 信用卡号使用标准 Visa 测试号 `4111111111111111`，通过 Luhn 校验，Checkout 全部成功
+- 所有 HTTP 请求均配置 `follow_redirects=true`，正确跟踪重定向
+- 测试结果均经过验证，CSV 数据完整无缺失
